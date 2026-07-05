@@ -1,0 +1,36 @@
+# --- Backend Server & API ---
+fastapi>=0.109.2
+uvicorn>=0.27.1
+pydantic>=2.6.1
+sse-starlette>=2.1.0
+
+# --- RAG Core (LangChain & LangGraph) ---
+langchain-core
+langchain-community
+langgraph>=0.0.24
+
+# --- LLM Providers ---
+langchain-google-genai>=1.0.0
+langchain-groq
+
+# --- Vector DB (Pinecone) ---
+langchain-pinecone
+pinecone-client
+
+# --- Embeddings (BAAI/bge-m3 via HuggingFace) ---
+sentence-transformers>=2.3.1
+langchain-huggingface
+safetensors
+transformers         # 최신 버전으로 복귀 (파이토치 2.6+ 호환)
+numpy                # 최신 버전으로 복귀
+cryptography         # 최신 버전으로 복귀
+
+# --- Data Ingestion & Search Tools ---
+PyMuPDF>=1.23.21     # PDF 파싱
+duckduckgo-search>=6.0.0 # 웹 검색
+GitPython>=3.1.43    # GitHub 연동
+beautifulsoup4       # 웹 크롤링 (WebBaseLoader 용)
+
+# --- Automation & Scheduling ---
+apscheduler          # 백그라운드 자동화 파이프라인
+requests             # 슬랙 웹훅 알림용

@@ -1,0 +1,103 @@
+<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="900" height="700" fill="#0A0A0F" rx="12"/>
+    
+    <!-- Title -->
+    <text x="450" y="50" font-family="Space Grotesk, system-ui, sans-serif" font-size="26" font-weight="bold" fill="#FAFAFA" text-anchor="middle">TechDoc Agent - Detailed RAG Architecture</text>
+    <text x="450" y="75" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#71717A" text-anchor="middle">Powered by LangGraph, Groq (LLaMA 3), ChromaDB, and React</text>
+
+    <!-- Frontend / User -->
+    <g transform="translate(350, 120)">
+        <rect width="200" height="60" fill="#1A1A24" stroke="#F59E0B" stroke-width="2" rx="8"/>
+        <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Frontend UI</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F59E0B" text-anchor="middle">(React, Vite, SSE)</text>
+    </g>
+
+    <!-- Router -->
+    <g transform="translate(350, 240)">
+        <rect width="200" height="60" fill="#1A1A24" stroke="#FAFAFA" stroke-width="1" rx="8"/>
+        <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Router Node</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#71717A" text-anchor="middle">(LangGraph + LLaMA 3)</text>
+    </g>
+
+    <!-- Vector Store -->
+    <g transform="translate(100, 360)">
+        <rect width="200" height="70" fill="#1A1A24" stroke="#FAFAFA" stroke-width="1" rx="8"/>
+        <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Local Vector Store</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#71717A" text-anchor="middle">(ChromaDB)</text>
+        <text x="100" y="60" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#71717A" text-anchor="middle">Embedding: BAAI/bge-m3</text>
+    </g>
+
+    <!-- Web Search -->
+    <g transform="translate(600, 360)">
+        <rect width="200" height="60" fill="#1A1A24" stroke="#FAFAFA" stroke-width="1" rx="8"/>
+        <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Web Search Tool</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#71717A" text-anchor="middle">(DuckDuckGo API)</text>
+    </g>
+
+    <!-- Grader -->
+    <g transform="translate(350, 480)">
+        <rect width="200" height="60" fill="#1A1A24" stroke="#F59E0B" stroke-width="1" rx="8"/>
+        <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Grader Node</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F59E0B" text-anchor="middle">LLaMA 3 JSON Parser</text>
+    </g>
+
+    <!-- Rewriter -->
+    <g transform="translate(100, 580)">
+        <rect width="200" height="60" fill="#1A1A24" stroke="#FAFAFA" stroke-width="1" rx="8"/>
+        <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Query Rewriter</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#71717A" text-anchor="middle">(LangGraph + LLaMA 3)</text>
+    </g>
+
+    <!-- Generator -->
+    <g transform="translate(600, 580)">
+        <rect width="200" height="60" fill="#1A1A24" stroke="#F59E0B" stroke-width="2" rx="8"/>
+        <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Generator Node</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F59E0B" text-anchor="middle">(Groq LLaMA-3-70B)</text>
+    </g>
+
+    <!-- Arrows -->
+    <!-- Frontend -> Router -->
+    <path d="M450 180 L450 240" stroke="#FAFAFA" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="460" y="215" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#71717A">FastAPI /stream</text>
+    
+    <!-- Router -> Vector Store -->
+    <path d="M390 300 L250 360" stroke="#FAFAFA" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="260" y="320" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#71717A">Tech/Docs</text>
+    
+    <!-- Router -> Web Search -->
+    <path d="M510 300 L650 360" stroke="#FAFAFA" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="590" y="320" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#71717A">General/Recent</text>
+
+    <!-- Vector Store -> Grader -->
+    <path d="M250 430 L390 480" stroke="#FAFAFA" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Web Search -> Grader -->
+    <path d="M650 420 L510 480" stroke="#FAFAFA" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Grader -> Generator -->
+    <path d="M510 540 L650 580" stroke="#FAFAFA" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="580" y="550" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#71717A">Relevant (Yes)</text>
+
+    <!-- Grader -> Rewriter -->
+    <path d="M390 540 L250 580" stroke="#FAFAFA" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="270" y="550" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#71717A">Irrelevant (No)</text>
+
+    <!-- Rewriter -> Vector/Web (Loop back) -->
+    <path d="M100 610 C -20 610, -20 270, 350 270" fill="none" stroke="#F59E0B" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow_amber)"/>
+    <text x="20" y="440" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F59E0B">Rewrite &amp; Retry (Max 2)</text>
+    
+    <!-- Generator -> Frontend (Loop back) -->
+    <path d="M750 580 C 900 580, 900 150, 550 150" fill="none" stroke="#F59E0B" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow_amber)"/>
+    <text x="760" y="350" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#F59E0B">SSE Stream Answer</text>
+
+    <!-- Defs for arrows -->
+    <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#FAFAFA" />
+        </marker>
+        <marker id="arrow_amber" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+            <path d="M0,0 L0,6 L9,3 z" fill="#F59E0B" />
+        </marker>
+    </defs>
+</svg>

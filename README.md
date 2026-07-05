@@ -18,7 +18,7 @@ TechDoc Agent는 개발자를 위한 클라우드 네이티브 기반 자율형 
 - Framework: React + Vite + react-router-dom
 - Styling: Vanilla CSS
 - Integration: EventSource API 및 지수 백오프 재연결
-- UI 출처: 초기 제공된 UI 프롬프트 및 커스텀 글래스모피즘 디자인 시스템 참고
+- UI 출처: https://www.designprompts.dev/ 프롬포트 참조
 
 ## 핵심 아키텍처 및 구현 기능
 

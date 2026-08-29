@@ -1,5 +1,6 @@
 import os
 import json
+import pathlib
 import logging
 import tempfile
 import urllib.parse
@@ -14,6 +15,7 @@ from typing import List
 from langchain_core.documents import Document
 from langchain_community.document_loaders import WebBaseLoader, PyMuPDFLoader
 from langchain_community.document_loaders.git import GitLoader
+from git import Repo
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
 from config import settings, get_md_excludes, get_include_exts
@@ -87,6 +89,90 @@ def notebook_to_text(raw: str) -> str:
     return "\n\n".join(parts)
 
 
+
+def _build_file_filter():
+    """
+    GitHub 레포에서 수집할 파일을 고르는 필터.
+
+    실제 수집(load_from_url)과 미리보기(preview_github)가 **같은 기준**을 써야
+    미리보기가 의미를 갖는다. 그래서 한 곳에서만 정의한다.
+    """
+    excludes = get_md_excludes()
+    include_exts = get_include_exts()
+
+    def _keep(file_path: str) -> bool:
+        lowered = file_path.lower()
+        if not any(lowered.endswith(e) for e in include_exts):
+            return False
+        return not any(x and x in file_path for x in excludes)
+
+    return _keep
+
+
+def _shallow_clone(url: str, dest: str):
+    """최신 스냅샷만 받고 (repo, 기본 브랜치명) 을 돌려준다."""
+    repo = Repo.clone_from(url, dest, depth=1)
+    try:
+        branch = repo.active_branch.name
+    except TypeError:
+        branch = repo.head.commit.hexsha   # detached HEAD
+    return repo, branch
+
+
+def preview_github(url: str, sample_n: int = 6) -> dict:
+    """
+    수집하지 않고 대상 문서를 미리 확인한다.
+
+    임베딩과 LLM 호출 없이 얕은 클론 -> 필터 -> 청킹까지만 수행하므로 몇 초면 끝난다.
+    청크 수는 어림이 아니라 실제 청커를 돌린 값이다.
+
+    레포에 쓸만한 문서가 실제로 있는지(마케팅 README 만 남았는지) 넣기 전에 판단하기 위한 것.
+    """
+    from ingest.chunker import chunk_documents
+
+    keep = _build_file_filter()
+    temp_dir = tempfile.mkdtemp()
+    try:
+        _, branch = _shallow_clone(url, temp_dir)
+
+        picked = []
+        for root, dirs, names in os.walk(temp_dir):
+            dirs[:] = [d for d in dirs if d != ".git"]
+            for name in names:
+                abs_path = os.path.join(root, name)
+                rel = os.path.relpath(abs_path, temp_dir)
+                if not keep(rel):
+                    continue
+                try:
+                    text = pathlib.Path(abs_path).read_text(encoding="utf-8")
+                except Exception:
+                    continue   # 디코딩 실패 파일은 실제 수집에서도 제외된다
+                picked.append((rel, text))
+
+        picked.sort(key=lambda x: -len(x[1]))
+
+        docs = [
+            Document(page_content=t,
+                     metadata={"source": url, "file_type": os.path.splitext(r)[1]})
+            for r, t in picked
+        ]
+        chunks = chunk_documents(docs) if docs else []
+
+        return {
+            "url": url,
+            "branch": branch,
+            "files": len(picked),
+            "total_chars": sum(len(t) for _, t in picked),
+            "chunks": len(chunks),
+            "largest_files": [
+                {"path": r, "chars": len(t), "head": t.strip()[:180]}
+                for r, t in picked[:sample_n]
+            ],
+        }
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
 def load_from_url(url: str) -> List[Document]:
     """
     - github.com -> GitLoader
@@ -98,34 +184,22 @@ def load_from_url(url: str) -> List[Document]:
     now_str = datetime.now().isoformat()
 
     if "github.com" in parsed_url.netloc:
-        excludes = get_md_excludes()
-
-        include_exts = get_include_exts()
-
-        def _keep(file_path: str) -> bool:
-            lowered = file_path.lower()
-            if not any(lowered.endswith(e) for e in include_exts):
-                return False
-            return not any(x and x in file_path for x in excludes)
+        _keep = _build_file_filter()
 
         temp_dir = tempfile.mkdtemp()
         try:
-            # 기본 브랜치(main) 시도
-            loader = GitLoader(
-                clone_url=url,
-                repo_path=temp_dir,
-                branch="main",
-                file_filter=_keep
-            )
-            docs = loader.load()
-        except Exception:
-            # 실패 시 master 시도
-            loader = GitLoader(
-                clone_url=url,
-                repo_path=temp_dir,
-                branch="master",
-                file_filter=_keep
-            )
+            # GitLoader 에 clone_url 을 넘기면 내부에서 전체 커밋 이력을 클론한다.
+            # 문서 수집에는 최신 스냅샷만 있으면 되므로 depth=1 로 직접 클론하고,
+            # GitLoader 에는 이미 받아둔 로컬 경로만 넘긴다. 큰 레포일수록 차이가 크다.
+            #
+            # 브랜치를 직접 지정하지도 않는다. 이전 구현은 "main" 을 시도하고 실패하면
+            # "master" 를 다시 시도했는데, 그러면 (1) 전체 클론이 두 번 일어나고
+            # (2) 기본 브랜치가 develop/trunk 인 레포는 두 번 다 실패했다.
+            # clone 은 원격의 기본 브랜치를 알아서 받아오므로, 받은 뒤 이름을 읽어 쓴다.
+            _, branch = _shallow_clone(url, temp_dir)
+            logger.info("Cloned %s (branch=%s, depth=1)", url, branch)
+
+            loader = GitLoader(repo_path=temp_dir, branch=branch, file_filter=_keep)
             docs = loader.load()
         finally:
             shutil.rmtree(temp_dir, ignore_errors=True)

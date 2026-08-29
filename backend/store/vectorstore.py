@@ -1,61 +1,48 @@
-import os
 import logging
 from typing import List, Dict, Any
+
 from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.retrievers import PineconeHybridSearchRetriever
+from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone, ServerlessSpec
-from pinecone_text.sparse import BM25Encoder
-from tenacity import retry, stop_after_attempt, wait_exponential
+
 from config import settings, resolve_device
 
 logger = logging.getLogger(__name__)
 
-EMBEDDING_DIM = 1024  # BAAI/bge-m3
+EMBEDDING_DIM = 1024        # BAAI/bge-m3
+UPSERT_BATCH = 64           # 한 번에 임베딩·적재할 청크 수
+DELETE_BATCH = 1000         # Pinecone 요청당 삭제 ID 상한
 
 
 class VectorStoreManager:
     def __init__(self):
-        # Initialize embeddings (Dense Vector)
         device = resolve_device()
         logger.info("Embedding device: %s", device)
+
+        # normalize_embeddings=True 가 중요하다.
+        # 인덱스 메트릭이 dotproduct 인데 정규화하지 않으면 벡터 크기가 유사도에 섞인다.
+        # 정규화하면 dotproduct == cosine 이 되어 인덱스를 다시 만들지 않고도 정확히 동작한다.
+        # (bge-m3 는 원래 정규화해서 쓰는 것이 표준이다.)
         self.embeddings = HuggingFaceEmbeddings(
             model_name="BAAI/bge-m3",
-            model_kwargs={"device": device}
+            model_kwargs={"device": device},
+            encode_kwargs={"normalize_embeddings": True},
         )
 
-        # Initialize BM25 Encoder (Sparse Vector)
-        self.bm25_encoder = BM25Encoder().default()
-
-        # Initialize Pinecone
         self.pc = Pinecone(api_key=settings.pinecone_api_key)
         self.index_name = settings.pinecone_index_name
 
-        # Ensure index is 'dotproduct' for Hybrid Search
-        existing_indexes = self.pc.list_indexes().names()
-        if self.index_name in existing_indexes:
-            idx_info = self.pc.describe_index(self.index_name)
-            if getattr(idx_info, "metric", "") == "cosine":
-                # 하이브리드 검색은 dotproduct 메트릭을 요구한다.
-                # 인덱스를 지우는 것은 되돌릴 수 없는 파괴적 작업이므로 기본적으로 거부하고,
-                # 사용자가 명시적으로 허용했을 때만 재생성한다.
-                if not settings.pinecone_allow_index_recreate:
-                    raise RuntimeError(
-                        f"Pinecone 인덱스 '{self.index_name}' 의 메트릭이 'cosine' 이라 "
-                        f"하이브리드 검색을 쓸 수 없습니다.\n"
-                        f"이 인덱스를 삭제하고 dotproduct 로 다시 만들려면 "
-                        f"환경변수 PINECONE_ALLOW_INDEX_RECREATE=true 를 설정하세요. "
-                        f"(기존 벡터는 모두 사라지며 문서를 재수집해야 합니다.)"
-                    )
-                logger.warning(
-                    "Deleting existing cosine index '%s' to upgrade to Hybrid Search (dotproduct). "
-                    "All existing vectors will be lost.", self.index_name
+        existing = self.pc.list_indexes().names()
+        if self.index_name in existing:
+            info = self.pc.describe_index(self.index_name)
+            if getattr(info, "metric", "") not in ("dotproduct", "cosine"):
+                raise RuntimeError(
+                    f"Pinecone 인덱스 '{self.index_name}' 의 메트릭이 "
+                    f"'{info.metric}' 입니다. dotproduct 또는 cosine 이어야 합니다."
                 )
-                self.pc.delete_index(self.index_name)
-                existing_indexes = self.pc.list_indexes().names()
-
-        if self.index_name not in existing_indexes:
-            logger.info("Creating Pinecone index '%s' (dim=%d, dotproduct)", self.index_name, EMBEDDING_DIM)
+        else:
+            logger.info("Creating Pinecone index '%s' (dim=%d)", self.index_name, EMBEDDING_DIM)
             self.pc.create_index(
                 name=self.index_name,
                 dimension=EMBEDDING_DIM,
@@ -64,55 +51,78 @@ class VectorStoreManager:
             )
 
         self.index = self.pc.Index(self.index_name)
-
-        # Setup Hybrid Retriever
-        self.hybrid_retriever = PineconeHybridSearchRetriever(
-            embeddings=self.embeddings,
-            sparse_encoder=self.bm25_encoder,
-            index=self.index,
-            text_key="text",
-            top_k=4,
-            alpha=0.5,  # 0.5: Dense와 Sparse를 5:5 비율로 결합
-        )
+        self.store = PineconeVectorStore(index=self.index, embedding=self.embeddings, text_key="text")
 
     # ------------------------------------------------------------------ #
     # 쓰기
     # ------------------------------------------------------------------ #
-    def add_documents(self, chunks: List[Document]):
-        """source URL 단위로 기존 벡터를 지우고 새로 upsert (실패 시 최대 3회 재시도)"""
-        if not chunks:
-            return
+    def add_documents(self, chunks: List[Document]) -> int:
+        """
+        source URL 단위로 기존 벡터를 지우고 새로 적재한다. 적재된 청크 수를 반환.
 
-        sources = set(c.metadata.get("source") for c in chunks if "source" in c.metadata)
-        for source in sources:
+        배치 단위로 나눠 넣는 이유:
+        이전 구현은 전체를 한 번의 add_texts 로 넘기고 실패하면 tenacity 가 처음부터
+        재시도했다. 수천 청크짜리 수집에서 중간에 한 번 실패하면 앞서 끝낸 작업을 통째로
+        버리고 다시 시작했고, 예외를 기록하지 않아 무엇이 실패했는지도 알 수 없었다.
+        (실제로 30분 넘게 같은 구간을 세 번 반복하고 원인을 남기지 않은 적이 있다.)
+
+        이제는 배치마다 독립적으로 넣고, 실패한 배치만 재시도하며, 실패 원인을 로그로 남긴다.
+        중간에 멈춰도 "어디까지 들어갔는지"가 반환값으로 드러난다.
+        """
+        if not chunks:
+            return 0
+
+        for source in {c.metadata.get("source") for c in chunks if "source" in c.metadata}:
             removed = self.delete_source(source)
             logger.info("Replaced source %s (removed %d old vectors)", source, removed)
 
         # chunk_index 는 chunker 가 배치 전체에서 유일하게 매긴 값이다.
-        # 이 값이 문서마다 리셋되면 ID가 충돌해 청크가 서로를 덮어쓴다.
         ids = [f"{c.metadata.get('source', 'unknown')}_{c.metadata['chunk_index']}" for c in chunks]
         if len(set(ids)) != len(ids):
-            logger.error(
-                "벡터 ID가 %d개 중복되었습니다. chunker 의 chunk_index 유일성을 확인하세요.",
-                len(ids) - len(set(ids)),
+            raise ValueError(
+                f"벡터 ID가 {len(ids) - len(set(ids))}개 중복되었습니다. "
+                f"chunker 의 chunk_index 유일성을 확인하세요."
             )
 
         texts = [c.page_content for c in chunks]
         metadatas = [c.metadata for c in chunks]
 
-        @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=8))
-        def _upsert():
-            self.hybrid_retriever.add_texts(texts=texts, metadatas=metadatas, ids=ids)
+        total = len(chunks)
+        added = 0
+        failed_batches = 0
 
-        _upsert()
+        for start in range(0, total, UPSERT_BATCH):
+            end = min(start + UPSERT_BATCH, total)
+            for attempt in (1, 2, 3):
+                try:
+                    self.store.add_texts(
+                        texts=texts[start:end],
+                        metadatas=metadatas[start:end],
+                        ids=ids[start:end],
+                    )
+                    added += end - start
+                    break
+                except Exception as e:
+                    logger.warning(
+                        "Upsert 실패 (청크 %d-%d, 시도 %d/3): %s: %s",
+                        start, end - 1, attempt, type(e).__name__, str(e)[:300],
+                    )
+                    if attempt == 3:
+                        failed_batches += 1
+                        logger.error("청크 %d-%d 를 건너뜁니다.", start, end - 1)
+
+            logger.info("적재 진행 %d/%d (%.0f%%)", end, total, 100 * end / total)
+
+        if failed_batches:
+            logger.error("총 %d개 배치가 실패했습니다. 적재된 청크: %d/%d",
+                         failed_batches, added, total)
+        return added
 
     # ------------------------------------------------------------------ #
     # 읽기
     # ------------------------------------------------------------------ #
     def as_retriever(self, k: int = 4):
-        """LangChain retriever 반환 (동적 K 적용)"""
-        self.hybrid_retriever.top_k = k
-        return self.hybrid_retriever
+        return self.store.as_retriever(search_kwargs={"k": k})
 
     def get_doc_list(self) -> List[Dict[str, Any]]:
         stats = self.index.describe_index_stats()
@@ -125,35 +135,23 @@ class VectorStoreManager:
         """
         해당 source URL 의 벡터를 모두 삭제하고 삭제된 개수를 반환.
 
-        Pinecone Serverless 인덱스는 메타데이터 필터 삭제(delete(filter=...))를
-        지원하지 않는다. 예전 구현은 그 호출이 던진 예외를 삼켜서 아무것도 지우지 못한 채
-        성공을 반환했고, 재수집할 때마다 낡은 벡터가 계속 쌓였다.
-        대신 ID prefix 로 대상을 나열해 ID 기반으로 삭제한다.
-        (ID 규칙: f"{source}_{chunk_index}")
+        Pinecone Serverless 는 메타데이터 필터 삭제를 지원하지 않는다.
+        ID prefix 로 대상을 나열해 ID 기반으로 지운다. (ID 규칙: f"{source}_{chunk_index}")
         """
-        prefix = f"{url}_"
         try:
             ids: List[str] = []
-            for page in self.index.list(prefix=prefix):
+            for page in self.index.list(prefix=f"{url}_"):
                 ids.extend(page)
 
             deleted = 0
-            for i in range(0, len(ids), 1000):  # Pinecone 은 요청당 1000개 제한
-                batch = ids[i:i + 1000]
+            for i in range(0, len(ids), DELETE_BATCH):
+                batch = ids[i:i + DELETE_BATCH]
                 self.index.delete(ids=batch)
                 deleted += len(batch)
             return deleted
-
         except Exception as e:
-            # pod 기반 구형 인덱스라면 메타데이터 필터 삭제가 동작한다. 폴백.
-            logger.warning("Prefix 기반 삭제 실패(%s). 메타데이터 필터 삭제로 폴백합니다.", e)
-            try:
-                self.index.delete(filter={"source": {"$eq": url}})
-                return 0
-            except Exception as e2:
-                logger.error("Pinecone 에서 %s 를 삭제하지 못했습니다: %s", url, e2)
-                return 0
+            logger.error("Pinecone 에서 %s 를 삭제하지 못했습니다: %s", url, e)
+            return 0
 
 
-# Singleton instance
 vector_store_manager = VectorStoreManager()

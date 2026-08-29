@@ -33,6 +33,12 @@ def run_automated_pipeline():
         elif status == 'skipped':
             skipped_count += 1
             logger.info(f"Skipped {url}: {message}")
+        elif status == 'partial':
+            # 일부 배치만 적재됐다. 해시를 남기지 않았으므로 다음 실행에서 다시 시도하지만,
+            # 원인을 방치하면 계속 반복되므로 알림 대상으로 둔다.
+            error_count += 1
+            logger.error(f"Partial ingest for {url}: {message}")
+            send_slack_alert(url, f"[부분 적재] {message}")
         else:
             error_count += 1
             logger.error(f"Error checking {url}: {message}")

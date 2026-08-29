@@ -17,8 +17,8 @@ aiosqlite                  # AsyncSqliteSaver (비동기 그래프 실행에 필
 langchain-google-genai>=1.0.0
 
 # --- Vector DB (Pinecone) ---
-pinecone>=5.0.0            # 코드가 `from pinecone import Pinecone` 로 직접 사용
-pinecone-text              # BM25 Sparse 인코더
+pinecone>=5.0.0            # 인덱스 생성/삭제에 클라이언트를 직접 사용
+langchain-pinecone         # PineconeVectorStore (dense 검색)
 
 # --- Embeddings (BAAI/bge-m3 via HuggingFace) ---
 sentence-transformers>=2.3.1

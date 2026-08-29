@@ -35,12 +35,23 @@ def process_url(url: str, force: bool = False) -> Tuple[str, str, int]:
         if not chunks:
             return 'error', 'Failed to chunk documents.', 0
             
-        # 5. Vector Store Update (Automatically deletes old chunks for this source)
-        vector_store_manager.add_documents(chunks)
-        
+        # 5. Vector Store Update (해당 source 의 기존 벡터를 지우고 새로 적재)
+        #    add_documents 는 배치별로 넣고 "실제 적재된 수" 를 돌려준다.
+        added = vector_store_manager.add_documents(chunks)
+
+        if added == 0:
+            return 'error', 'No chunks were stored. See logs for the upsert failure.', 0
+
         # 6. Update SQLite Tracker
-        db.add_document(url, len(chunks), current_hash)
-        
-        return 'ok', f'Successfully updated. Added {len(chunks)} chunks.', len(chunks)
+        if added < len(chunks):
+            # 일부 배치가 실패했다. 여기서 해시를 기록하면 다음 수집이 "변경 없음" 으로
+            # 건너뛰어 불완전한 색인이 영구히 남는다. 해시를 남기지 않아 다시 시도하게 한다.
+            db.add_document(url, added, None)
+            return ('partial',
+                    f'Stored {added}/{len(chunks)} chunks. Hash not recorded so the next run retries.',
+                    added)
+
+        db.add_document(url, added, current_hash)
+        return 'ok', f'Successfully updated. Added {added} chunks.', added
     except Exception as e:
         return 'error', str(e), 0

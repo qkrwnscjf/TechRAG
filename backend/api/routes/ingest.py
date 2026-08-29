@@ -3,6 +3,7 @@ from api.schemas import IngestRequest, IngestResponse
 from store.vectorstore import vector_store_manager
 import store.db as db
 from ingest.pipeline import process_url
+from ingest.loader import preview_github
 
 router = APIRouter()
 
@@ -11,9 +12,30 @@ def ingest_document(req: IngestRequest):
     status, message, chunks_added = process_url(req.url, force=True)
     if status == 'error':
         return IngestResponse(status="error", message=message)
+    if status == 'partial':
+        # 일부 배치가 실패했다. 성공으로 보고하면 사용자가 색인이 온전하다고 오해한다.
+        return IngestResponse(status="partial", chunks_added=chunks_added,
+                              source=req.url, message=message)
     # Even if status == 'skipped', when forced from UI, it will actually update. 
     # But since UI requests are 'force=True', it won't skip unless there's an error.
     return IngestResponse(status="ok", chunks_added=chunks_added, source=req.url, message=message)
+
+@router.get("/ingest/preview")
+def preview_document(url: str):
+    """
+    수집 전에 대상 레포에 무엇이 들어 있는지 확인한다.
+
+    얕은 클론 -> 필터 -> 청킹까지만 수행하고 임베딩은 하지 않으므로 몇 초면 끝난다.
+    문서를 이관해 마케팅 README 만 남은 레포를 그대로 수집하면
+    검색이 그 문구를 물어오게 되므로, 넣기 전에 걸러내기 위한 것이다.
+    """
+    if "github.com" not in url:
+        raise HTTPException(status_code=400, detail="현재 GitHub 레포 URL 만 지원합니다.")
+    try:
+        return preview_github(url)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"미리보기 실패: {e}")
+
 
 @router.get("/docs")
 def get_documents():

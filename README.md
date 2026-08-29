@@ -13,7 +13,7 @@
 |---|---|
 | LLM | Google Gemini 2.5 Flash (Vision 포함) |
 | Embedding | BAAI/bge-m3 (HuggingFace, 로컬 추론) |
-| Vector DB | Pinecone Serverless (Hybrid: Dense + Sparse BM25) |
+| Vector DB | Pinecone Serverless (Dense 검색) |
 | Reranker (선택) | BAAI/bge-reranker-v2-m3 Cross-Encoder |
 | Agent | LangGraph & LangChain (순환형 State Machine) |
 | Backend | FastAPI, SQLite |
@@ -65,7 +65,7 @@ contextualize ──▶ router ──▶ retriever ──▶ grader
 |---|---|
 | `contextualize` | "방금 그거 다시 설명해줘" 같은 후속 질문을 대화 이력으로 독립 문장으로 복원 |
 | `router` | 문서 검색 / 웹 검색 분기. 최신성 키워드는 규칙으로 판별 |
-| `retriever` | Pinecone 하이브리드 검색 또는 DuckDuckGo |
+| `retriever` | Pinecone dense 검색 또는 DuckDuckGo |
 | `grader` | 검색된 문서가 질문에 답이 되는지 채점. 전체 문서를 한 번의 호출로 묶어 판정 |
 | `question_rewriter` | 관련 문서가 없으면 질문을 다른 각도로 재작성해 재검색 |
 | `generator` | 최종 답변 생성. 토큰이 만들어지는 즉시 SSE 로 전송 |
@@ -88,7 +88,7 @@ load_from_url ──▶ SHA-256 해시 ──▶ SQLite 대조 ──▶ 청킹 
 
 | 입력 | 처리 |
 |---|---|
-| GitHub 레포 | `GitLoader` 로 클론 후 문서 확장자만 추출 (`.md`, `.mdx`, `.rst`, `.txt`) |
+| GitHub 레포 | `--depth 1` 얕은 클론 후 문서 확장자만 추출 (기본 `.md`, `.mdx`) |
 | PDF | `PyMuPDFLoader` (페이지 단위) |
 | 웹페이지 | `WebBaseLoader` + 본문 이미지 Vision 분석 |
 | 주피터 노트북 | JSON 을 파싱해 markdown/code 셀만 추출 (실행 출력은 제거) |
@@ -107,6 +107,18 @@ load_from_url ──▶ SHA-256 해시 ──▶ SQLite 대조 ──▶ 청킹 
 **갱신 방식**: 같은 URL 을 다시 수집하면 기존 벡터를 **전부 지우고 새로 넣습니다**(부분 갱신 아님).
 Pinecone Serverless 는 메타데이터 필터 삭제를 지원하지 않으므로, ID prefix 로 대상을 나열해
 ID 기반으로 삭제합니다.
+
+**적재 방식**: 64청크씩 **배치 단위로 독립 적재**합니다. 전체를 한 번에 넘기면 중간에 한 번
+실패했을 때 앞서 끝낸 작업까지 버리고 처음부터 다시 하게 됩니다. 배치별로 나누면 실패한
+배치만 재시도하면 되고, 실패 원인도 로그에 남습니다.
+
+일부 배치가 끝내 실패하면 수집 결과가 `partial` 이 되고 **콘텐츠 해시를 기록하지 않습니다.**
+해시를 남기면 다음 수집이 "변경 없음"으로 건너뛰어 불완전한 색인이 영구히 남기 때문입니다.
+해시가 없으므로 다음 실행에서 자동으로 다시 시도합니다.
+
+**수집 전 미리보기**: `GET /api/ingest/preview?url=...` 은 얕은 클론과 청킹까지만 수행하고
+임베딩은 하지 않습니다. 대상 파일 수·청크 수·대표 문서 내용을 몇 초 만에 확인할 수 있어,
+문서를 다른 곳으로 이관해 README 만 남은 레포를 적재하는 사고를 막습니다.
 
 ## 3. 멀티모달 — 다이어그램을 텍스트로
 
@@ -140,17 +152,27 @@ LangGraph 를 `updates` 와 `messages` 두 모드로 동시에 구독합니다.
 
 | 상황 | 대응 |
 |---|---|
-| Pinecone/Gemini 통신 실패 | Tenacity 지수 백오프 재시도 3회 |
+| 적재 배치 실패 | 해당 배치만 3회 재시도, 원인을 로그에 기록. 앞선 배치는 보존 |
+| 일부 배치 최종 실패 | `partial` 반환 + 해시 미기록 → 다음 실행에서 재시도 |
+| Gemini 통신 실패 | 클라이언트 레벨 재시도 3회 |
 | SSE 연결 끊김 | 프론트엔드 백오프 재연결 (서버가 보낸 에러는 재시도하지 않음) |
-| 수집 실패 | Slack 웹훅 알림 |
-| 인덱스 메트릭 불일치 | 자동 삭제 대신 명확한 에러로 중단 (환경변수로만 재생성 허용) |
+| 수집 실패·부분 적재 | Slack 웹훅 알림 |
 
-## 알려진 한계
+## 설계 메모 — 하이브리드 검색을 걷어낸 이유
 
-**하이브리드 검색의 sparse 절반이 제 역할을 못 합니다.** `BM25Encoder().default()` 는
-영어 코퍼스로 사전 학습된 IDF 파라미터를 쓰기 때문에 한국어 문서에서는 기여가 거의 없습니다.
-제대로 쓰려면 실제 코퍼스로 학습한 파라미터를 색인 시점과 질의 시점에 동일하게 유지하는
-영속화 계층이 필요합니다. 향후 과제로 남겨두었습니다.
+초기에는 Dense + Sparse(BM25) 하이브리드 검색을 썼습니다. 측정해 보니
+**Dense 단독과 하이브리드의 성능 차이가 없었습니다.** `BM25Encoder().default()` 가
+영어 코퍼스로 사전 학습된 IDF 파라미터를 쓰기 때문에 한국어 문서에서는 기여가 없었습니다.
+
+게다가 코드 블록만 있는 청크는 영어 토크나이저가 토큰을 잡지 못해 **빈 희소 벡터**가 되고,
+Pinecone 이 이를 거부해 적재가 실패하는 원인이 되기도 했습니다.
+
+**이득이 0인데 실패 모드만 추가하는 구성**이라 제거했습니다. 대신 임베딩에
+`normalize_embeddings=True` 를 적용해, 인덱스 메트릭이 `dotproduct` 여도
+`dotproduct == cosine` 이 성립하도록 했습니다(인덱스 재생성 불필요).
+
+BM25 를 제대로 쓰려면 실제 코퍼스로 학습한 IDF 파라미터를 색인 시점과 질의 시점에
+동일하게 유지하는 영속화 계층이 필요합니다. 향후 과제로 남겨두었습니다.
 
 ---
 
@@ -176,7 +198,10 @@ GITHUB_TOKEN=your_github_token
 EMBEDDING_DEVICE=cpu
 
 # --- 선택: 수집 대상 ---
-GITHUB_INCLUDE_EXT=.md,.mdx,.rst,.txt        # .ipynb 를 추가하면 노트북도 수집
+# .rst / .txt 를 넣으면 Sphinx 문서나 순수 텍스트도 수집합니다.
+# 단 .txt 는 requirements.txt, CMakeLists.txt 같은 비문서 파일까지 끌어옵니다.
+GITHUB_INCLUDE_EXT=.md,.mdx                  # .ipynb 를 추가하면 노트북도 수집
+# 경로에 아래 조각이 포함된 파일은 건너뜁니다. 레포에 맞춰 조정하세요.
 GITHUB_MD_EXCLUDE=node_modules,dist,build,.github,venv,site-packages,CHANGELOG
 
 # --- 선택: LLM 호출 예산 ---
@@ -203,10 +228,9 @@ LANGCHAIN_PROJECT=TechDoc-Agent
 > Gemini 무료 티어에는 분당·일일 호출 한도가 있습니다. 이 에이전트는 질문 하나에
 > LLM 을 2~3회 호출하므로, 연속 대화를 하려면 결제 활성화를 권장합니다.
 
-> 기존 Pinecone 인덱스의 메트릭이 `cosine` 이면 하이브리드 검색을 쓸 수 없습니다.
-> 이 경우 서버는 인덱스를 지우는 대신 에러를 내고 멈춥니다.
-> 삭제 후 `dotproduct` 로 재생성하려면 `PINECONE_ALLOW_INDEX_RECREATE=true` 를 설정하세요.
-> **기존 벡터가 모두 사라지므로 문서 재수집이 필요합니다.**
+> Pinecone 인덱스 메트릭은 `dotproduct` 와 `cosine` 을 모두 지원합니다.
+> 임베딩을 정규화해서 넣으므로 두 메트릭의 결과가 같습니다.
+> 인덱스가 없으면 `dotproduct` · 1024차원으로 자동 생성합니다.
 
 ## 로컬 실행
 
@@ -255,7 +279,8 @@ docker compose up -d --build
 | 메서드 | 경로 | 설명 |
 |---|---|---|
 | `GET` | `/api/stream?q=<질문>&thread_id=<세션ID>` | SSE 스트리밍 응답 |
-| `POST` | `/api/ingest` | 문서 수집 (`{"url": "..."}`) |
+| `POST` | `/api/ingest` | 문서 수집 (`{"url": "..."}`). `status`: `ok` / `partial` / `error` |
+| `GET` | `/api/ingest/preview?url=<레포URL>` | 수집 전 미리보기. 임베딩 없이 파일 수·청크 수·대표 문서 확인 |
 | `GET` | `/api/docs` | 수집된 문서 목록 |
 | `DELETE` | `/api/docs?url=<URL>` | 문서 삭제 (Pinecone 벡터 + SQLite 기록) |
 | `GET` | `/api/health` | 헬스체크 |

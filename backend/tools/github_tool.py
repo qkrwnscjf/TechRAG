@@ -18,7 +18,7 @@ def get_repo_info(repo_name: str) -> str:
         readme_content = ""
         try:
             readme = repo.get_readme()
-            readme_content = f"### README\\n{readme.decoded_content.decode('utf-8')}"
+            readme_content = f"### README\n{readme.decoded_content.decode('utf-8')}"
         except Exception:
             readme_content = "No README found."
 
@@ -28,13 +28,13 @@ def get_repo_info(repo_name: str) -> str:
             releases = repo.get_releases()
             if releases.totalCount > 0:
                 latest = releases[0]
-                release_content = f"### Latest Release: {latest.title}\\n{latest.body}"
+                release_content = f"### Latest Release: {latest.title}\n{latest.body}"
             else:
                 release_content = "No releases found."
         except Exception:
             release_content = "Failed to fetch releases."
 
-        return f"# {repo_name}\\n\\n{readme_content}\\n\\n{release_content}"
+        return f"# {repo_name}\n\n{readme_content}\n\n{release_content}"
     except Exception as e:
         return f"Error fetching repo info: {e}"
 

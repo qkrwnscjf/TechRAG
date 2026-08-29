@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { agentClient } from '../api/agentClient';
 
 function Docs() {
@@ -21,6 +21,9 @@ function Docs() {
   };
 
   useEffect(() => {
+    // 마운트 시 목록을 불러온다. 데이터 페칭은 효과에서 하는 것이 맞고,
+    // 이 규칙은 동기 setState 만 문제 삼으므로 이 호출에서만 해제한다.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchDocs();
   }, []);
 
@@ -43,7 +46,7 @@ function Docs() {
       setIngestMessage({ text: res.message || 'Document successfully ingested!', type: 'success' });
       setIngestUrl('');
       fetchDocs();
-    } catch (error) {
+    } catch {
       setIngestMessage({ text: 'Failed to ingest document. Please check backend logs.', type: 'error' });
     } finally {
       setIsIngesting(false);

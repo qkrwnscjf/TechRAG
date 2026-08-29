@@ -52,3 +52,41 @@ Here is the initial question:
 
 Formulate an improved question:"""
 )
+
+# Contextualize prompt
+contextualize_prompt = PromptTemplate.from_template(
+    """Given a chat history and the latest user question which might reference context in the chat history, 
+formulate a standalone question which can be understood without the chat history. Do NOT answer the question, 
+just reformulate it if needed and otherwise return it as is.
+
+Chat History:
+{chat_history}
+
+Latest Question: {question}
+
+Standalone Question:"""
+)
+
+# Batch grader prompt
+# 문서를 하나씩 채점하면 LLM 왕복이 문서 수만큼 발생한다. Gemini 무료 티어는 분당 5회라
+# 질문 한 번이 한도를 넘긴다. 전체 문서를 한 프롬프트에 넣어 1회로 끝낸다.
+batch_grader_prompt = PromptTemplate.from_template(
+    """You are a strict grader deciding which retrieved documents actually help answer a question.
+
+Rules:
+- A document is relevant ONLY if it contains information that directly helps answer the question.
+- Belonging to the same project, repository, or general topic is NOT enough.
+- Boilerplate, template, or setup documentation unrelated to the question is NOT relevant.
+- When in doubt, exclude. Returning fewer, precise documents is better than many vague ones.
+
+Return ONLY a JSON object with a single key 'relevant' whose value is an array of the
+index numbers of the relevant documents. Example: {{"relevant": [0, 2]}}
+If none are relevant, return {{"relevant": []}}.
+Do not provide any explanations or other text.
+
+Question: {question}
+
+Documents:
+{documents}
+"""
+)

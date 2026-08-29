@@ -7,6 +7,7 @@ export function useAgentStream() {
   const [answer, setAnswer] = useState('');
   const [sources, setSources] = useState([]);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [error, setError] = useState(null);
   const [eventSource, setEventSource] = useState(null);
 
   const askQuestion = useCallback((question) => {
@@ -14,6 +15,7 @@ export function useAgentStream() {
     setChunks([]);
     setAnswer('');
     setSources([]);
+    setError(null);
     setIsStreaming(true);
     
     if (eventSource) {
@@ -26,8 +28,8 @@ export function useAgentStream() {
       onToken: (data) => setAnswer(prev => prev + data.text),
       onSources: (data) => setSources(data.sources),
       onDone: () => setIsStreaming(false),
-      onError: (err) => {
-        console.error('Stream error:', err);
+      onError: (message) => {
+        setError(typeof message === 'string' ? message : '오류가 발생했습니다.');
         setIsStreaming(false);
       }
     });
@@ -42,5 +44,5 @@ export function useAgentStream() {
     }
   }, [eventSource]);
 
-  return { trace, chunks, answer, sources, isStreaming, askQuestion, stopStream };
+  return { trace, chunks, answer, sources, isStreaming, error, askQuestion, stopStream };
 }

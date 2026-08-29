@@ -6,8 +6,9 @@ DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "documents.db")
 
 def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=5.0)
     cursor = conn.cursor()
+    cursor.execute('PRAGMA journal_mode=WAL;')
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS documents (
             url TEXT PRIMARY KEY,
@@ -24,7 +25,7 @@ def init_db():
     conn.close()
 
 def add_document(url: str, chunk_count: int, content_hash: str = None):
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=5.0)
     cursor = conn.cursor()
     created_at = datetime.now().isoformat()
     cursor.execute('''
@@ -35,7 +36,7 @@ def add_document(url: str, chunk_count: int, content_hash: str = None):
     conn.close()
 
 def get_documents():
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=5.0)
     cursor = conn.cursor()
     cursor.execute('SELECT url, chunk_count, created_at, content_hash FROM documents ORDER BY created_at DESC')
     rows = cursor.fetchall()
@@ -43,7 +44,7 @@ def get_documents():
     return [{"url": row[0], "chunk_count": row[1], "loaded_at": row[2], "content_hash": row[3]} for row in rows]
 
 def get_document(url: str):
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=5.0)
     cursor = conn.cursor()
     cursor.execute('SELECT url, chunk_count, created_at, content_hash FROM documents WHERE url = ?', (url,))
     row = cursor.fetchone()
@@ -53,7 +54,7 @@ def get_document(url: str):
     return None
 
 def delete_document(url: str):
-    conn = sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH, timeout=5.0)
     cursor = conn.cursor()
     cursor.execute('DELETE FROM documents WHERE url = ?', (url,))
     conn.commit()

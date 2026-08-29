@@ -1,0 +1,56 @@
+# docker-compose.yml
+# (Compose Spec 에서 top-level `version` 키는 폐기되어 제거함)
+
+services:
+  # 백엔드 API 웹 서버
+  backend-api:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend-data:/app/data
+      - hf-cache:/root/.cache/huggingface   # 임베딩 모델(BAAI/bge-m3, 약 4.3GB) 캐시 공유
+    environment:
+      HF_HOME: /root/.cache/huggingface
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+    healthcheck:
+      # 임베딩 모델 로드 때문에 기동에 20~30초가 걸린다. start_period 로 그 시간을 준다.
+      test: ["CMD", "python", "-c",
+             "import urllib.request;urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+
+  # 새벽 문서 수집용 백그라운드 스케줄러 (같은 백엔드 이미지 사용)
+  backend-scheduler:
+    build:
+      context: ./backend
+    command: ["python", "scheduler.py"]
+    volumes:
+      - backend-data:/app/data
+      - hf-cache:/root/.cache/huggingface   # api 컨테이너와 동일 캐시를 재사용
+    environment:
+      HF_HOME: /root/.cache/huggingface
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+    depends_on:
+      - backend-api
+
+  # 프론트엔드 Nginx 서버
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    depends_on:
+      - backend-api
+
+volumes:
+  backend-data:   # SQLite (대화 체크포인트 + 크롤링 지문)
+  hf-cache:       # HuggingFace 모델 가중치. 없으면 컨테이너마다·재생성마다 재다운로드.

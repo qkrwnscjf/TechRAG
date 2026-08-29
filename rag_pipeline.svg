@@ -4,7 +4,7 @@
     
     <!-- Title -->
     <text x="450" y="50" font-family="Space Grotesk, system-ui, sans-serif" font-size="26" font-weight="bold" fill="#FAFAFA" text-anchor="middle">TechDoc Agent - Detailed RAG Architecture</text>
-    <text x="450" y="75" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#71717A" text-anchor="middle">Powered by LangGraph, Groq (LLaMA 3), ChromaDB, and React</text>
+    <text x="450" y="75" font-family="Inter, system-ui, sans-serif" font-size="14" fill="#71717A" text-anchor="middle">Powered by LangGraph, Gemini 2.5 Flash, Pinecone, and React</text>
 
     <!-- Frontend / User -->
     <g transform="translate(350, 120)">
@@ -17,14 +17,14 @@
     <g transform="translate(350, 240)">
         <rect width="200" height="60" fill="#1A1A24" stroke="#FAFAFA" stroke-width="1" rx="8"/>
         <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Router Node</text>
-        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#71717A" text-anchor="middle">(LangGraph + LLaMA 3)</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#71717A" text-anchor="middle">(LangGraph + Gemini 2.5 Flash)</text>
     </g>
 
     <!-- Vector Store -->
     <g transform="translate(100, 360)">
         <rect width="200" height="70" fill="#1A1A24" stroke="#FAFAFA" stroke-width="1" rx="8"/>
         <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Local Vector Store</text>
-        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#71717A" text-anchor="middle">(ChromaDB)</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#71717A" text-anchor="middle">(Pinecone Cloud)</text>
         <text x="100" y="60" font-family="Inter, system-ui, sans-serif" font-size="11" fill="#71717A" text-anchor="middle">Embedding: BAAI/bge-m3</text>
     </g>
 
@@ -39,21 +39,21 @@
     <g transform="translate(350, 480)">
         <rect width="200" height="60" fill="#1A1A24" stroke="#F59E0B" stroke-width="1" rx="8"/>
         <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Grader Node</text>
-        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F59E0B" text-anchor="middle">LLaMA 3 JSON Parser</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F59E0B" text-anchor="middle">Gemini JSON Parser</text>
     </g>
 
     <!-- Rewriter -->
     <g transform="translate(100, 580)">
         <rect width="200" height="60" fill="#1A1A24" stroke="#FAFAFA" stroke-width="1" rx="8"/>
         <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Query Rewriter</text>
-        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#71717A" text-anchor="middle">(LangGraph + LLaMA 3)</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#71717A" text-anchor="middle">(LangGraph + Gemini 2.5)</text>
     </g>
 
     <!-- Generator -->
     <g transform="translate(600, 580)">
         <rect width="200" height="60" fill="#1A1A24" stroke="#F59E0B" stroke-width="2" rx="8"/>
         <text x="100" y="25" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#FAFAFA" text-anchor="middle">Generator Node</text>
-        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F59E0B" text-anchor="middle">(Groq LLaMA-3-70B)</text>
+        <text x="100" y="45" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#F59E0B" text-anchor="middle">(Gemini 2.5 Flash)</text>
     </g>
 
     <!-- Arrows -->

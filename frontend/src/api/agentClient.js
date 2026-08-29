@@ -1,4 +1,36 @@
-const API_BASE = 'http://localhost:8000/api';
+// 상대경로가 기본값이다.
+//  - 개발: vite.config.js 의 server.proxy 가 /api -> localhost:8000 으로 넘긴다.
+//  - 운영: frontend/nginx.conf 의 location /api/ 가 backend-api:8000 으로 넘긴다.
+// 둘 다 동일 출처가 되므로 CORS 설정에 의존하지 않는다.
+// 백엔드를 다른 호스트에 띄울 때만 VITE_API_BASE 로 덮어쓴다.
+const API_BASE = import.meta.env.VITE_API_BASE || '/api';
+
+// 대화 세션 식별자.
+// 백엔드는 이 값을 LangGraph 체크포인터의 thread_id 로 쓴다. 보내지 않으면 모든 방문자가
+// 같은 기본 thread_id 를 공유해 서로의 대화 맥락이 섞인다.
+// 브라우저마다 한 번 만들어 localStorage 에 보관한다.
+const SESSION_KEY = 'techdoc_thread_id';
+
+function getThreadId() {
+  const fresh = () =>
+    (globalThis.crypto?.randomUUID?.() ??
+      `s_${Date.now()}_${Math.random().toString(36).slice(2)}`);
+  try {
+    let id = localStorage.getItem(SESSION_KEY);
+    if (!id) {
+      id = fresh();
+      localStorage.setItem(SESSION_KEY, id);
+    }
+    return id;
+  } catch {
+    // 프라이빗 모드 등 localStorage 를 못 쓰는 환경 - 탭 수명 동안만 유효한 값을 쓴다.
+    return fresh();
+  }
+}
+
+export function resetSession() {
+  try { localStorage.removeItem(SESSION_KEY); } catch { /* 무시 */ }
+}
 
 export const agentClient = {
   ingestDoc: async (url) => {
@@ -29,7 +61,10 @@ export const agentClient = {
     let es = null;
 
     const connect = () => {
-      es = new EventSource(`${API_BASE}/stream?q=${encodeURIComponent(question)}`);
+      const threadId = getThreadId();
+      es = new EventSource(
+        `${API_BASE}/stream?q=${encodeURIComponent(question)}&thread_id=${encodeURIComponent(threadId)}`
+      );
       
       es.addEventListener('trace', (e) => {
         onTrace && onTrace(JSON.parse(e.data));
@@ -52,14 +87,31 @@ export const agentClient = {
         es.close();
       });
       
+      // EventSource 는 두 가지를 같은 'error' 이벤트로 전달한다.
+      //   1) 서버가 명시적으로 보낸 `event: error` (e.data 에 메시지가 있다)
+      //   2) 네트워크 연결 끊김 (e.data 가 없다)
+      // 이걸 구분하지 않으면 서버가 보낸 에러에도 재연결을 시도하게 되는데,
+      // 그러면 같은 질문이 다시 실행되어 실패 원인(예: API 할당량 초과)을 더 악화시킨다.
       es.addEventListener('error', (e) => {
+        if (e.data) {
+          let message = '알 수 없는 오류가 발생했습니다.';
+          try {
+            message = JSON.parse(e.data).message || message;
+          } catch {
+            message = String(e.data);
+          }
+          es.close();
+          onError && onError(message);   // 재연결하지 않는다
+          return;
+        }
+
         es.close();
         if (retryCount < MAX_RETRIES) {
           retryCount++;
           console.warn(`SSE connection lost. Retrying... (${retryCount}/${MAX_RETRIES})`);
           setTimeout(connect, 1000 * retryCount); // 백오프 재연결
         } else {
-          onError && onError(e);
+          onError && onError('서버에 연결할 수 없습니다. 백엔드가 실행 중인지 확인하세요.');
         }
       });
     };

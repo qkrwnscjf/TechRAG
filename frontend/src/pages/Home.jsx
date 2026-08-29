@@ -1,9 +1,73 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { useAgentStream } from '../hooks/useAgentStream';
+
+// 생성 결과는 마크다운이다. 평문으로 뿌리면 코드 블록과 목록이 뭉개져,
+// 기술 문서 답변으로서 읽을 수 없게 된다.
+const markdownComponents = {
+  code({ inline, children, ...props }) {
+    if (inline) {
+      return (
+        <code
+          style={{
+            background: 'var(--muted)',
+            padding: '0.15em 0.4em',
+            borderRadius: '4px',
+            fontSize: '0.9em',
+          }}
+          {...props}
+        >
+          {children}
+        </code>
+      );
+    }
+    return (
+      <pre
+        style={{
+          background: 'var(--muted)',
+          border: '1px solid var(--border)',
+          borderRadius: '8px',
+          padding: '0.9rem 1rem',
+          overflowX: 'auto',
+          fontSize: '0.85rem',
+          lineHeight: '1.6',
+        }}
+      >
+        <code {...props}>{children}</code>
+      </pre>
+    );
+  },
+  a({ children, ...props }) {
+    return (
+      <a target="_blank" rel="noreferrer" className="text-accent hover:underline" {...props}>
+        {children}
+      </a>
+    );
+  },
+  ul: (props) => <ul style={{ paddingLeft: '1.25rem', listStyle: 'disc' }} {...props} />,
+  ol: (props) => <ol style={{ paddingLeft: '1.25rem', listStyle: 'decimal' }} {...props} />,
+  li: (props) => <li style={{ margin: '0.25rem 0' }} {...props} />,
+  p: (props) => <p style={{ margin: '0.6rem 0', lineHeight: '1.7' }} {...props} />,
+};
+
+// 백엔드가 그대로 올려보내는 원문 에러를 사용자가 읽을 수 있는 문장으로 바꾼다.
+function describeError(raw) {
+  const text = String(raw || '');
+  if (/429|RESOURCE_EXHAUSTED|quota/i.test(text)) {
+    return {
+      title: 'Gemini 무료 티어 한도에 도달했습니다',
+      detail: '무료 티어는 분당 5회 · 하루 20회입니다. 잠시 후 다시 시도하거나, 내일 다시 질문해 주세요.',
+    };
+  }
+  if (/connect|연결/i.test(text)) {
+    return { title: '백엔드에 연결할 수 없습니다', detail: 'API 서버가 실행 중인지 확인해 주세요.' };
+  }
+  return { title: '요청을 처리하지 못했습니다', detail: text.slice(0, 300) };
+}
 
 function Home() {
   const [query, setQuery] = useState('');
-  const { trace, chunks, answer, sources, isStreaming, askQuestion } = useAgentStream();
+  const { trace, answer, sources, isStreaming, error, askQuestion, stopStream } = useAgentStream();
 
   const handleAsk = () => {
     if (!query.trim() || isStreaming) return;
@@ -44,12 +108,17 @@ function Home() {
             >
               {isStreaming ? 'Thinking...' : 'Ask Agent'}
             </button>
+            {isStreaming && (
+              <button className="btn btn-secondary" style={{ padding: '0 1.5rem' }} onClick={stopStream}>
+                중단
+              </button>
+            )}
           </div>
         </div>
       </section>
 
       {/* Results Section */}
-      {(trace.length > 0 || answer) && (
+      {(trace.length > 0 || answer || error) && (
         <section className="container mb-24" style={{ maxWidth: '48rem' }}>
           <div className="card text-left">
             
@@ -63,9 +132,10 @@ function Home() {
                       <span className="text-accent">▶</span>
                       <span className="font-mono text-xs bg-[var(--muted)] px-2 py-1 rounded">{step.node}</span>
                       <span>
-                        {step.node === 'router' && `Routed to ${step.decision}`}
+                        {step.node === 'contextualize' && `질문을 독립 문장으로 정리`}
+                        {step.node === 'router' && `${step.decision} 로 라우팅${step.method === 'rule' ? ' (규칙)' : ''}`}
                         {step.node === 'retriever' && `Found ${step.doc_count} documents`}
-                        {step.node === 'grader' && `Kept ${step.kept}, Dropped ${step.dropped}`}
+                        {step.node === 'grader' && `문서 ${step.kept + step.dropped}개 중 ${step.kept}개 채택`                          + (step.method === 'reranker' ? ' (리랭커)' : '')}
                         {step.node === 'question_rewriter' && `Rewrote question to refine search`}
                         {step.node === 'generator' && `Generating final answer`}
                       </span>
@@ -78,10 +148,25 @@ function Home() {
             {/* Final Answer */}
             <div className="answer-content">
               <h3 className="text-xl font-semibold mb-4 text-foreground">Answer</h3>
-              {answer ? (
-                <p className="text-base text-foreground leading-relaxed whitespace-pre-wrap">
-                  {answer}
-                </p>
+              {error ? (
+                <div
+                  className="p-4 rounded-lg"
+                  style={{
+                    border: '1px solid rgba(248, 113, 113, 0.35)',
+                    backgroundColor: 'rgba(248, 113, 113, 0.08)',
+                  }}
+                >
+                  <p className="text-base font-semibold" style={{ color: '#f87171' }}>
+                    {describeError(error).title}
+                  </p>
+                  <p className="text-sm text-muted mt-2" style={{ lineHeight: '1.6' }}>
+                    {describeError(error).detail}
+                  </p>
+                </div>
+              ) : answer ? (
+                <div className="text-base text-foreground answer-markdown">
+                  <ReactMarkdown components={markdownComponents}>{answer}</ReactMarkdown>
+                </div>
               ) : (
                 <p className="text-muted-foreground animate-pulse">Generating response...</p>
               )}

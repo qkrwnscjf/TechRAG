@@ -1,7 +1,10 @@
-from typing import TypedDict, List, Dict, Any
+import operator
+from typing import TypedDict, List, Dict, Any, Annotated
 from langchain_core.documents import Document
+from langchain_core.messages import BaseMessage
 
 class AgentState(TypedDict):
+    messages: Annotated[List[BaseMessage], operator.add]
     question: str
     route: str                    # "vectorstore" | "web_search"
     documents: List[Document]

@@ -27,6 +27,10 @@ backend/data/
 pip-log.txt
 pip-delete-this-directory.txt
 
+# 런타임 로그 (RotatingFileHandler 가 생성)
+*.log
+*.log.[0-9]
+
 # Node / Frontend
 node_modules/
 dist/
@@ -41,3 +45,12 @@ yarn-error.log*
 .idea/
 *.swp
 *.swo
+
+# 문서 (로컬 보관)
+# 내부 설계·측정 기록은 공개하지 않는다. 루트 README.md 만 예외로 올린다.
+# 앞으로 새로 만드는 .md 도 자동으로 제외된다.
+*.md
+!/README.md
+
+# 에이전트 작업 설정 (로컬 전용)
+.claude/

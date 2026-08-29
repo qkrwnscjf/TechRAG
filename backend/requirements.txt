@@ -2,35 +2,40 @@
 fastapi>=0.109.2
 uvicorn>=0.27.1
 pydantic>=2.6.1
+pydantic-settings>=2.0.0   # config.py 의 BaseSettings (누락 시 ImportError)
 sse-starlette>=2.1.0
 
 # --- RAG Core (LangChain & LangGraph) ---
 langchain-core
 langchain-community
+langchain-text-splitters   # ingest/chunker.py 의 RecursiveCharacterTextSplitter
 langgraph>=0.0.24
+langgraph-checkpoint-sqlite
+aiosqlite                  # AsyncSqliteSaver (비동기 그래프 실행에 필수)
 
 # --- LLM Providers ---
 langchain-google-genai>=1.0.0
-langchain-groq
 
 # --- Vector DB (Pinecone) ---
-langchain-pinecone
-pinecone-client
+pinecone>=5.0.0            # 코드가 `from pinecone import Pinecone` 로 직접 사용
+pinecone-text              # BM25 Sparse 인코더
 
 # --- Embeddings (BAAI/bge-m3 via HuggingFace) ---
 sentence-transformers>=2.3.1
 langchain-huggingface
 safetensors
-transformers         # 최신 버전으로 복귀 (파이토치 2.6+ 호환)
-numpy                # 최신 버전으로 복귀
-cryptography         # 최신 버전으로 복귀
+transformers
+numpy
+cryptography
 
 # --- Data Ingestion & Search Tools ---
-PyMuPDF>=1.23.21     # PDF 파싱
-duckduckgo-search>=6.0.0 # 웹 검색
-GitPython>=3.1.43    # GitHub 연동
-beautifulsoup4       # 웹 크롤링 (WebBaseLoader 용)
+PyMuPDF>=1.23.21           # PDF 파싱
+duckduckgo-search>=6.0.0   # 웹 검색
+GitPython>=3.1.43          # GitHub 연동
+PyGithub                   # GitHub 연동
+beautifulsoup4             # 웹 크롤링 (WebBaseLoader 용)
 
 # --- Automation & Scheduling ---
-apscheduler          # 백그라운드 자동화 파이프라인
-requests             # 슬랙 웹훅 알림용
+apscheduler                # 백그라운드 자동화 파이프라인
+requests                   # 슬랙 웹훅 알림용
+tenacity                   # 재시도 로직

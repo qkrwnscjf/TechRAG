@@ -1,12 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap');
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+/* 폰트는 index.html 의 <link> 로 받는다. CSS 안의 @import 는 스타일시트를
+   내려받은 뒤에야 요청이 시작돼 렌더를 한 번 더 막는다. */
 
 :root {
   --background: #0A0A0F;
   --background-alt: #12121A;
   --foreground: #FAFAFA;
   --muted: #1A1A24;
-  --muted-foreground: #71717A;
+  /* #71717A 는 배경 대비 4.09:1 로 WCAG AA(본문 4.5:1)에 못 미쳤다.
+     .text-muted 는 text-sm 본문에 널리 쓰이므로 4.85:1 로 올린다. */
+  --muted-foreground: #7D7D87;
   --accent: #F59E0B;
   --accent-foreground: #0A0A0F;
   --accent-muted: rgba(245, 158, 11, 0.15);
@@ -16,9 +18,18 @@
   --card-solid: #1A1A24;
   --ring: #F59E0B;
 
-  --font-display: "Space Grotesk", "Pretendard Variable", system-ui, sans-serif;
-  --font-body: "Inter", "Pretendard Variable", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  /* 상태 색.
+     info 를 --accent 로 쓰면 warn(#FBBF24)과 앰버 두 톤이 겹쳐 육안 구분이 안 된다.
+     "수집 중"과 "일부만 적재됨"은 반드시 달라 보여야 하므로 info 는 중립색으로 둔다. */
+  --info: #7D7D87;
+  --success: #4ADE80;
+  --warn: #FBBF24;
+  --error: #F87171;
+
+  /* 한글 화면 문구를 영어로 통일하면서 Pretendard 를 제거했다. */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
 body {
@@ -135,14 +146,26 @@ code, pre {
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--border);
   border-radius: 12px;
-  transition: all 300ms ease-out;
+  transition: border-color 300ms ease-out, background 300ms ease-out;
   padding: 1.5rem;
 }
-.card:hover {
+
+/* .card 는 장식용 기능 카드뿐 아니라 답변 패널과 Docs 메인 패널에도 붙는다.
+   여기에 scale 호버를 두면 긴 글을 읽으려 마우스를 올릴 때마다 패널이 튀고
+   글자가 잠깐 흐려진다. 확대 효과는 눌러도 되는 카드에만 따로 붙인다. */
+.card-interactive {
+  transition: transform 300ms ease-out, border-color 300ms ease-out,
+              background 300ms ease-out, box-shadow 300ms ease-out;
+}
+.card-interactive:hover {
   border-color: var(--border-hover);
   background: rgba(26, 26, 36, 0.8);
-  transform: scale(1.02);
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+.card-interactive:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 .card.highlighted {
   border: 1px solid rgba(245, 158, 11, 0.2);
@@ -190,17 +213,41 @@ code, pre {
 @media (min-width: 768px) { .section-spacing { padding-top: 8rem; padding-bottom: 8rem; } }
 @media (min-width: 1024px) { .section-spacing { padding-top: 10rem; padding-bottom: 10rem; } }
 
+/* 100vh 를 채우면 답변 섹션이 항상 스크롤 아래에 생긴다. 질문을 던진 사용자가
+   "아무 일도 일어나지 않는" 화면을 보게 되므로, 다음 섹션이 살짝 걸치도록 낮춘다. */
 .hero-section {
-  min-height: calc(100vh - 65px);
+  min-height: 78vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-bottom: 8vh;
+  padding-bottom: 6vh;
+  transition: min-height 400ms cubic-bezier(0.16, 1, 0.3, 1),
+              padding-bottom 400ms cubic-bezier(0.16, 1, 0.3, 1);
 }
+/* 대화가 시작되면 히어로는 역할을 다했다. 답변에 자리를 내준다. */
+.hero-section.is-compact {
+  min-height: 0;
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+}
+
 .features-section {
   padding-top: 4rem;
   padding-bottom: 8rem;
+}
+
+/* 유동 타이포. md:/lg: 단계 클래스는 키우기만 할 뿐 모바일에서 줄이지 못해
+   기본값(3.5rem)이 그대로 375px 화면에 적용되고 있었다. */
+.hero-title {
+  font-size: clamp(2.25rem, 7.5vw, 4.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+.page-title {
+  font-size: clamp(1.75rem, 5.5vw, 3.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
 }
 
 .flex { display: flex; }
@@ -285,6 +332,43 @@ code, pre {
   padding: 1rem 0;
 }
 
+/* 네비게이션.
+   현재 위치 표시가 없어 /docs 에서도 링크가 평소와 똑같아 보였다.
+   밑줄 바를 가로로 펼쳐 활성 상태를 알린다. */
+.nav-link {
+  position: relative;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.25rem 0;
+  transition: color 200ms ease-out;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 2px;
+  width: 100%;
+  background-color: var(--accent);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-link:hover { color: var(--foreground); }
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-link.is-active { color: var(--foreground); }
+.nav-link.is-active::after { transform: scaleX(1); }
+
+.brand {
+  color: var(--foreground);
+  text-decoration: none;
+  transition: opacity 200ms ease-out;
+}
+.brand:hover { opacity: 0.75; }
+
 .tag {
   display: inline-block;
   padding: 0.25rem 0.75rem;
@@ -295,58 +379,239 @@ code, pre {
   font-family: var(--font-mono);
 }
 
-/* Modal Glassmorphism */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-  animation: fadeIn 0.2s ease-out;
-}
-
-.modal-content {
-  background: rgba(18, 18, 26, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 500px;
-  max-height: 85vh;
-  overflow-y: auto;
-  padding: 1.5rem;
-  position: relative;
-  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.modal-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: transparent;
-  border: none;
-  color: var(--muted-foreground);
-  font-size: 1.5rem;
-  line-height: 1;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-.modal-close:hover {
-  color: var(--foreground);
-}
-
+/* 페이지 진입 페이드. 아래 .animate-in / .fade-in 이 참조한다. */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+/* ==========================================================================
+   Tailwind 문법 호환 유틸리티
+   --------------------------------------------------------------------------
+   JSX 는 Tailwind 클래스명으로 작성돼 있지만 이 프로젝트는 Tailwind 를
+   쓰지 않는다(package.json 에 의존성 없음). 정의되지 않은 클래스는 에러 없이
+   조용히 무시되므로, 아래 규칙이 없으면 화면이 "깨진 티도 안 나게" 깨진다.
+   실제로 다음이 이 이유로 동작하지 않고 있었다.
+     - 문서 목록 항목의 테두리·배경·패딩 (border / bg-[var(--muted)] / p-4)
+     - 히어로 검색창의 가로 배치 (md:flex-row)
+     - 기능 카드 배지가 카드 폭 전체로 늘어남 (items-start 부재 -> stretch)
+     - 보조 텍스트가 본문과 같은 밝기로 나옴 (text-muted-foreground)
+   Tailwind 를 도입하는 대신 쓰이는 클래스만 채운다. 의존성이 늘지 않고
+   기존 손으로 쓴 규칙(.card/.btn/.input)과 충돌하지 않는다.
+   ========================================================================== */
+
+/* --- 색상 --- */
+.text-foreground { color: var(--foreground); }
+/* .text-muted 와 별개다. JSX 가 두 이름을 모두 쓴다. */
+.text-muted-foreground { color: var(--muted-foreground); }
+.text-red-400 { color: #f87171; }
+.bg-\[var\(--muted\)\] { background-color: var(--muted); }
+
+/* --- 정렬 / 플렉스 --- */
+.items-start { align-items: flex-start; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1 1 0%; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+@media (min-width: 768px) { .md\:flex-row { flex-direction: row; } }
+
+/* --- 간격 --- */
+.gap-1 { gap: 0.25rem; }
+.gap-3 { gap: 0.75rem; }
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-6 { margin-top: 1.5rem; }
+
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-5 { margin-bottom: 1.25rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-10 { margin-bottom: 2.5rem; }
+.mb-24 { margin-bottom: 6rem; }
+
+.mr-4 { margin-right: 1rem; }
+
+.p-4 { padding: 1rem; }
+.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+.pt-4 { padding-top: 1rem; }
+.pt-8 { padding-top: 2rem; }
+.pb-6 { padding-bottom: 1.5rem; }
+.pr-2 { padding-right: 0.5rem; }
+
+/* --- 테두리 --- */
+/* border-color 만 인라인 style 로 주는 곳이 있다. width/style 이 없으면
+   테두리가 아예 그려지지 않으므로 여기서 함께 정한다. */
+.border { border: 1px solid var(--border); }
+.rounded { border-radius: 6px; }
+.rounded-lg { border-radius: 8px; }
+.rounded-xl { border-radius: 12px; }
+
+/* --- 타이포그래피 --- */
+.text-6xl { font-size: 4rem; }
+.text-7xl { font-size: 4.75rem; }
+@media (min-width: 768px) {
+  .md\:text-5xl { font-size: 3.5rem; }
+  .md\:text-6xl { font-size: 4rem; }
+}
+@media (min-width: 1024px) { .lg\:text-7xl { font-size: 4.75rem; } }
+
+.font-mono { font-family: var(--font-mono); }
+.uppercase { text-transform: uppercase; }
+.tracking-tight { letter-spacing: -0.025em; }
+.tracking-wide { letter-spacing: 0.05em; }
+.text-left { text-align: left; }
+/* 긴 소스 URL 이 목록 밖으로 삐져나가는 것을 막는다. */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- 넘침 / 크기 --- */
+.overflow-hidden { overflow: hidden; }
+.overflow-y-auto { overflow-y: auto; }
+/* 수집 문서가 늘어나도 목록이 화면을 밀어내지 않도록 높이를 제한한다. */
+.max-h-\[400px\] { max-height: 400px; }
+
+/* --- 전이 / 호버 --- */
+.transition-colors {
+  transition: color 200ms ease-out, background-color 200ms ease-out,
+              border-color 200ms ease-out;
+}
+.transition-all { transition: all 200ms ease-out; }
+.hover\:text-foreground:hover { color: var(--foreground); }
+.hover\:text-red-300:hover { color: #fca5a5; }
+.hover\:underline:hover { text-decoration: underline; }
+.hover\:border-gray-500:hover { border-color: var(--border-hover); }
+
+/* --- 진입 애니메이션 --- */
+/* JSX 는 "animate-in fade-in duration-500" 세 클래스를 함께 쓴다.
+   duration-500 이 뒤에 와야 기본 지속시간을 덮어쓴다. */
+.animate-in {
+  animation-name: fadeIn;
+  animation-duration: 300ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+.fade-in { animation-name: fadeIn; }
+.duration-500 { animation-duration: 500ms; transition-duration: 500ms; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+/* --- 답변 본문 --- */
+/* 답변에는 긴 URL 이나 패키지 경로가 섞인다. 기본 줄바꿈 규칙으로는
+   끊기지 않아 카드 밖으로 넘치므로 어디서든 끊을 수 있게 한다.
+   코드 블록은 markdownComponents 에서 가로 스크롤을 따로 준다. */
+.answer-markdown { overflow-wrap: anywhere; }
+
+/* ==========================================================================
+   상태 표시와 인터랙션
+   ========================================================================== */
+
+/* 비활성 버튼이 활성 버튼과 똑같아 보였다. 눌리지 않는 이유를 색으로 알린다. */
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: none;
+  box-shadow: none;
+}
+/* 각 변형의 호버 효과만 걷어낸다. 배경색은 변형이 정한 값을 그대로 둔다. */
+.btn:disabled:hover,
+.btn[disabled]:hover {
+  filter: none;
+  box-shadow: none;
+}
+.btn-secondary:disabled:hover,
+.btn-secondary[disabled]:hover {
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+.btn-danger:disabled:hover,
+.btn-danger[disabled]:hover {
+  background-color: rgba(248, 113, 113, 0.1);
+  color: var(--error);
+}
+.btn:disabled:active,
+.btn[disabled]:active { transform: none; }
+
+/* 수집 입력 줄. 좁은 화면에서 입력창(flex-1)과 버튼 2개가 한 줄에 몰리면
+   입력창에 60px 남짓만 남아 URL 을 넣을 수 없다. 버튼을 아랫줄로 흘린다. */
+.ingest-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.ingest-row .input {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+/* 수집 문서 목록의 한 줄. */
+.doc-item {
+  background-color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: border-color 200ms ease-out, transform 200ms ease-out,
+              background-color 200ms ease-out;
+}
+.doc-item:hover {
+  border-color: var(--border-hover);
+  background-color: #1F1F2B;
+  transform: translateX(2px);
+}
+
+/* 삭제 버튼은 위험한 동작이다. 평소엔 조용히, 올렸을 때만 또렷하게. */
+.btn-danger {
+  background-color: rgba(248, 113, 113, 0.1);
+  color: var(--error);
+  transition: background-color 200ms ease-out, color 200ms ease-out;
+}
+.btn-danger:hover {
+  background-color: rgba(248, 113, 113, 0.18);
+  color: #FCA5A5;
+}
+
+/* 에이전트 진행 단계. 노드 이름은 고정폭 알약으로 문장과 구분한다. */
+.trace-step {
+  animation: traceIn 300ms ease-out both;
+}
+@keyframes traceIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.trace-chip {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  background-color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* 상태 메시지 색. 네 상태가 서로 구분돼야 한다.
+   특히 warn(일부만 적재됨)은 success 와 절대 같아 보이면 안 된다. */
+.msg-info    { color: var(--info); }
+.msg-success { color: var(--success); }
+.msg-warn    { color: var(--warn); }
+.msg-error   { color: var(--error); }
+
+/* 움직임을 줄이도록 설정한 사용자에게는 전환과 애니메이션을 걷어낸다. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

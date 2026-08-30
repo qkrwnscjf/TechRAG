@@ -33,7 +33,7 @@ def preview_document(url: str, include_ext: str = None, exclude_paths: str = Non
     검색이 그 문구를 물어오게 되므로, 넣기 전에 걸러내기 위한 것이다.
     """
     if "github.com" not in url:
-        raise HTTPException(status_code=400, detail="현재 GitHub 레포 URL 만 지원합니다.")
+        raise HTTPException(status_code=400, detail="Only GitHub repository URLs are supported.")
     try:
         return preview_github(
             url,
@@ -41,7 +41,7 @@ def preview_document(url: str, include_ext: str = None, exclude_paths: str = Non
             excludes=[x.strip() for x in exclude_paths.split(',')] if exclude_paths else None,
         )
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"미리보기 실패: {e}")
+        raise HTTPException(status_code=502, detail=f"Preview failed: {e}")
 
 
 @router.get("/docs")

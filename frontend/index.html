@@ -4,7 +4,20 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+
+    <!--
+      폰트는 CSS 안의 @import 가 아니라 여기서 받는다.
+      @import 는 스타일시트를 먼저 내려받은 뒤에야 요청이 시작돼 렌더를 두 번 막는다.
+      한글 가변 폰트(Pretendard)는 화면 문구를 영어로 통일하면서 제거했다.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+    />
+
+    <title>TechDoc Agent</title>
   </head>
   <body>
     <div id="root"></div>

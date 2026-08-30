@@ -284,11 +284,26 @@ Vite 개발 서버가 `/api` 요청을 `localhost:8000` 으로 프록시하므�
 docker compose up -d --build
 ```
 
-백엔드 API · 스케줄러 · 프론트엔드(Nginx) 세 컨테이너가 함께 뜹니다.
+백엔드 API · 스케줄러 · 프론트엔드(Nginx) 세 컨테이너가 뜹니다.
 완료 후 `http://localhost` 로 접속하세요. API 경로는 Nginx 가 프록시합니다.
 
 - `backend-data` 볼륨 — SQLite 두 개를 백엔드 컨테이너가 공유
 - `hf-cache` 볼륨 — 임베딩 모델 가중치 공유. 없으면 컨테이너마다, 재빌드마다 4.3GB 를 다시 받습니다
+
+> **Docker 메모리를 최소 6GB 로 설정하세요.**
+> `backend-api` 와 `backend-scheduler` 가 **각각** 임베딩 모델을 메모리에 올립니다
+> (컨테이너당 약 2.3GB). Docker Desktop 기본값(4GB 안팎)에서는 한쪽이 기동에 실패합니다.
+> 메모리를 늘릴 수 없다면 API 서버만 띄우세요.
+>
+> ```bash
+> docker compose up -d backend-api frontend
+> ```
+>
+> 야간 자동 수집은 안 돌지만 챗봇은 정상 동작합니다.
+
+> 백엔드 이미지는 약 9.5GB 입니다. 리눅스에서 `pip install torch` 가 CUDA 빌드를
+> 기본으로 받기 때문이며, CPU 전용 환경에서는 그 대부분이 쓰이지 않습니다.
+> 이미지 축소는 향후 과제입니다.
 
 ---
 

@@ -9,7 +9,7 @@ from langchain_core.messages import HumanMessage, AIMessage
 from agent.state import AgentState
 from agent.prompts import (router_prompt, grader_prompt, batch_grader_prompt,
                            generator_prompt, rewriter_prompt, contextualize_prompt)
-from store.vectorstore import vector_store_manager
+from store.vectorstore import get_vector_store_manager
 from tools.web_search import search_web
 from agent import reranker
 from config import settings
@@ -86,7 +86,7 @@ def retriever_node(state: AgentState) -> dict:
     k = settings.reranker_candidates if reranker.is_enabled() else settings.retriever_top_k
 
     if route == "vectorstore":
-        retriever = vector_store_manager.as_retriever(k=k)
+        retriever = get_vector_store_manager().as_retriever(k=k)
         docs = retriever.invoke(question)
     else:
         docs = search_web(question, max_results=max(5, k))

@@ -12,6 +12,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
+
+# torch 를 CPU 전용 휠로 먼저 설치한다.
+# 리눅스에서 그냥 `pip install torch` 를 하면 CUDA 빌드가 딸려오는데
+# (nvidia_cudnn 445MB, cusparselt 221MB, nccl 206MB 등), 이 컨테이너는 CPU 로만
+# 추론하므로 전부 쓰이지 않는 용량이다. 이미지가 9.5GB 까지 부풀었다.
+# 아래에서 torch 가 이미 충족되므로 requirements.txt 설치 시 재다운로드되지 않는다.
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 코드 복사

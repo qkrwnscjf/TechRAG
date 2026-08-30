@@ -4,7 +4,7 @@ from typing import Tuple, Optional
 from ingest.loader import load_from_url
 from config import get_include_exts, get_md_excludes
 from ingest.chunker import chunk_documents
-from store.vectorstore import vector_store_manager
+from store.vectorstore import get_vector_store_manager
 import store.db as db
 
 logger = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ def process_url(url: str, force: bool = False,
             
         # 5. Vector Store Update (해당 source 의 기존 벡터를 지우고 새로 적재)
         #    add_documents 는 배치별로 넣고 "실제 적재된 수" 를 돌려준다.
-        added = vector_store_manager.add_documents(chunks)
+        added = get_vector_store_manager().add_documents(chunks)
 
         if added == 0:
             return 'error', 'No chunks were stored. See logs for the upsert failure.', 0

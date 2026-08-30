@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from api.schemas import IngestRequest, IngestResponse
-from store.vectorstore import vector_store_manager
+from store.vectorstore import get_vector_store_manager
 import store.db as db
 from ingest.pipeline import process_url
 from ingest.loader import preview_github
@@ -50,6 +50,6 @@ def get_documents():
 
 @router.delete("/docs")
 def delete_document(url: str):
-    vector_store_manager.delete_source(url)
+    get_vector_store_manager().delete_source(url)
     db.delete_document(url)
     return {"status": "ok", "message": f"Deleted {url}"}

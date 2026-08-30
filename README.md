@@ -1,11 +1,14 @@
 # TechDoc Agent
 
-개발 문서를 스스로 최신화하고, 자신의 검색 결과를 스스로 검증하는 RAG 챗봇입니다.
+기술 문서를 검색해 답하고, **자신의 검색 결과를 스스로 검증하는** RAG 챗봇입니다.
 
-기술 문서는 계속 바뀝니다. 한 번 색인하고 끝내면 곧 낡은 답을 내놓습니다.
-그래서 이 프로젝트는 **문서를 주기적으로 다시 읽어 벡터 DB를 갱신하는 파이프라인**과,
-**검색 결과가 질문에 맞는지 스스로 채점하고 필요하면 질문을 고쳐 다시 검색하는 에이전트**를
-하나로 묶었습니다.
+일반적인 RAG 는 검색이 엉뚱한 문서를 가져와도 그것으로 답을 만듭니다.
+이 프로젝트는 검색 결과가 질문에 맞는지 스스로 채점하고, 맞지 않으면 질문을 고쳐
+다시 검색합니다. 그래도 근거가 없으면 지어내지 않고 "모르겠다"고 답합니다.
+
+수집 쪽에서는 **넣기 전에 무엇이 들어갈지 먼저 보여줍니다.** 레포에는 문서 외에
+테스트 픽스처·자동 생성 API 레퍼런스·마케팅 문구가 섞여 있고, 그대로 색인하면
+검색이 그 문구를 물어옵니다.
 
 ## 사용 스택
 
@@ -17,7 +20,6 @@
 | Reranker (선택) | BAAI/bge-reranker-v2-m3 Cross-Encoder |
 | Agent | LangGraph & LangChain (순환형 State Machine) |
 | Backend | FastAPI, SQLite |
-| Automation | APScheduler (독립 프로세스) |
 | Frontend | React + Vite, EventSource(SSE) |
 | Deployment | Docker Compose, Nginx |
 | Observability | LangSmith |
@@ -40,8 +42,8 @@
 [질의]  질문 ──▶ LangGraph 에이전트 ──▶ Pinecone 검색 ──▶ 답변 (SSE 스트리밍)
 ```
 
-두 파이프라인은 **프로세스도 분리**되어 있습니다. API 서버가 여러 워커로 뜨면 스케줄러가
-중복 실행되므로, 수집 스케줄러는 별도 프로세스(`scheduler.py`)로 띄웁니다.
+수집은 `POST /api/ingest` 로 명시적으로 실행합니다. 넣기 전에
+`GET /api/ingest/preview` 로 대상을 확인할 수 있습니다.
 
 ## 1. 질의 파이프라인 — 순환형 에이전트
 
@@ -124,8 +126,8 @@ ID 기반으로 삭제합니다.
 
 **수집 필터는 문서마다 따로 저장됩니다.** 버려야 할 경로는 레포마다 다릅니다
 (vLLM 은 `rust/`·`fixtures/`, Prefect 는 `api-ref/`·`plans/`). 그런데 필터가 전역 설정
-하나뿐이면, 다른 레포를 넣으려고 설정을 바꾼 뒤 야간 스케줄러가 기존 문서를 **바뀐 필터로**
-재수집해 색인을 조용히 망가뜨립니다. 그래서 수집에 사용한 필터를 문서와 함께 기록하고,
+하나뿐이면, 다른 레포를 넣으려고 설정을 바꾼 뒤 기존 문서를 **바뀐 필터로** 재수집해
+색인을 조용히 망가뜨립니다. 그래서 수집에 사용한 필터를 문서와 함께 기록하고,
 재수집할 때 그 필터를 다시 씁니다.
 
 필터는 다음 순서로 정해집니다.
@@ -133,7 +135,7 @@ ID 기반으로 삭제합니다.
 | 순위 | 출처 | 언제 |
 |---|---|---|
 | 1 | 요청 본문의 `include_ext` / `exclude_paths` | 새 레포를 넣을 때 |
-| 2 | 그 문서가 이전에 사용한 필터 | 재수집(스케줄러 포함) |
+| 2 | 그 문서가 이전에 사용한 필터 | 같은 URL 을 다시 수집할 때 |
 | 3 | 전역 설정 (`.env`) | 위 둘이 없을 때 |
 
 덕분에 레포를 추가할 때 `.env` 를 고칠 필요가 없습니다.
@@ -174,7 +176,6 @@ LangGraph 를 `updates` 와 `messages` 두 모드로 동시에 구독합니다.
 | 일부 배치 최종 실패 | `partial` 반환 + 해시 미기록 → 다음 실행에서 재시도 |
 | Gemini 통신 실패 | 클라이언트 레벨 재시도 3회 |
 | SSE 연결 끊김 | 프론트엔드 백오프 재연결 (서버가 보낸 에러는 재시도하지 않음) |
-| 수집 실패·부분 적재 | Slack 웹훅 알림 |
 
 ## 설계 메모 — 하이브리드 검색을 걷어낸 이유
 
@@ -205,9 +206,6 @@ BM25 를 제대로 쓰려면 실제 코퍼스로 학습한 IDF 파라미터를 �
 GOOGLE_API_KEY=your_gemini_api_key
 PINECONE_API_KEY=your_pinecone_api_key
 PINECONE_INDEX_NAME=techdoc
-
-# --- 선택: 수집 실패 알림 ---
-SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...
 
 # --- 선택: GitHub 레포 수집 시 rate limit 완화 ---
 GITHUB_TOKEN=your_github_token
@@ -252,7 +250,7 @@ LANGCHAIN_PROJECT=TechDoc-Agent
 
 ## 로컬 실행
 
-API 서버와 스케줄러는 **반드시 분리해서** 띄웁니다. 터미널 3개를 사용합니다.
+터미널 2개를 사용합니다.
 
 ```bash
 # 최초 1회
@@ -266,11 +264,7 @@ pip install -r backend/requirements.txt
 source venv/bin/activate && cd backend
 python -m uvicorn api.main:app --host 0.0.0.0 --port 8000
 
-# 터미널 2 — 야간 수집 스케줄러 (매일 03:00)
-source venv/bin/activate && cd backend
-python scheduler.py
-
-# 터미널 3 — 프론트엔드
+# 터미널 2 — 프론트엔드
 cd frontend && npm install && npm run dev
 ```
 
@@ -284,7 +278,7 @@ Vite 개발 서버가 `/api` 요청을 `localhost:8000` 으로 프록시하므�
 docker compose up -d --build
 ```
 
-백엔드 API · 스케줄러 · 프론트엔드(Nginx) 세 컨테이너가 뜹니다.
+백엔드 API 와 프론트엔드(Nginx) 두 컨테이너가 뜹니다.
 완료 후 `http://localhost` 로 접속하세요. API 경로는 Nginx 가 프록시합니다.
 
 - `backend-data` 볼륨 — SQLite 두 개를 백엔드 컨테이너가 공유
@@ -295,18 +289,10 @@ docker compose up -d --build
 | 컨테이너 | 메모리 |
 |---|---|
 | `backend-api` | 830 MB (임베딩 모델 보유) |
-| `backend-scheduler` | 473 MB (잡이 돌기 전까지 모델 미보유) |
 | `frontend` | 8 MB |
 
-> 임베딩 모델은 **API 서버만** 기동 시 미리 올립니다. 스케줄러는 실제로 수집 잡이
-> 돌 때만 모델을 로드하므로, 유휴 상태에서 2.3GB 를 붙들지 않습니다.
->
-> 다만 **새벽 3시에 잡이 돌면** 스케줄러도 모델을 올립니다. Docker 메모리가 4GB 이하라면
-> 그 시점에 빠듯할 수 있으니, 여유가 없다면 스케줄러를 빼고 띄우세요.
->
-> ```bash
-> docker compose up -d backend-api frontend
-> ```
+> 임베딩 모델(약 2.3GB)은 API 서버가 기동 시 미리 올립니다. 첫 질의가 로딩을
+> 떠안지 않게 하기 위함이며, Docker 메모리는 3GB 이상이면 충분합니다.
 
 ---
 

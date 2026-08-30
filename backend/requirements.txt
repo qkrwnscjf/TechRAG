@@ -35,7 +35,6 @@ GitPython>=3.1.43          # GitHub 연동
 PyGithub                   # GitHub 연동
 beautifulsoup4             # 웹 크롤링 (WebBaseLoader 용)
 
-# --- Automation & Scheduling ---
-apscheduler                # 백그라운드 자동화 파이프라인
-requests                   # 슬랙 웹훅 알림용
+# --- 기타 ---
+requests                   # 이미지 다운로드(Vision 분석)
 tenacity                   # 재시도 로직

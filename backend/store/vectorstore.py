@@ -165,15 +165,10 @@ def get_vector_store_manager() -> VectorStoreManager:
 
     예전에는 모듈 최하단에서 바로 생성했는데, 그러면 `store.vectorstore` 를 import 하는
     것만으로 임베딩 모델(약 2.3GB)이 메모리에 올라가고 Pinecone 접속까지 일어났다.
-    문제가 두 가지였다.
+    이 모듈을 import 하는 어떤 코드도 테스트할 수 없었고, 모델이 필요 없는 경로까지
+    로딩 비용을 물었다.
 
-      1) scheduler.py 는 하루 한 번(새벽 3시) 도는 잡인데, 기동 즉시 모델을 올려
-         종일 2.3GB 를 붙들고 있었다. API 컨테이너와 합치면 Docker 메모리 한도를 넘겨
-         컨테이너가 뜨지 못했다.
-      2) 이 모듈을 import 하는 어떤 코드도 테스트할 수 없었다.
-
-    참고: 이 변경으로 "기동 시" 문제는 사라지지만, 스케줄러가 실제로 잡을 돌리는
-    시점에는 여전히 모델을 올린다. API 와 동시에 올라가면 메모리가 빠듯할 수 있다.
+    API 서버는 어차피 모델이 필요하므로 기동 시 워밍업한다(api/main.py 의 lifespan).
     """
     global _instance
     if _instance is None:

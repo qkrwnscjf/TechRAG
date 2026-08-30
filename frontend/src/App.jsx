@@ -19,11 +19,8 @@ function App() {
           </div>
           <nav className="flex gap-4">
             <Link to="/docs" className="text-muted hover:text-foreground text-sm font-medium transition-colors" style={{ textDecoration: 'none' }}>
-              Docs
+              문서 관리
             </Link>
-            <a href="#" className="text-muted hover:text-foreground text-sm font-medium transition-colors" style={{ textDecoration: 'none' }}>
-              Settings
-            </a>
           </nav>
         </div>
       </header>

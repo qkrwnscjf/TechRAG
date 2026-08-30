@@ -80,14 +80,15 @@ function Home() {
         <div className="flex flex-col items-center text-center mx-auto" style={{ maxWidth: '48rem', width: '100%' }}>
           <div className="hero-badge">
             <div className="pulse-dot animate-pulse-glow"></div>
-            <span>v1.0.0-beta</span>
+            <span>자기 검증 RAG</span>
           </div>
           <h1 className="text-5xl md:text-6xl lg:text-7xl mb-6 font-bold" style={{ letterSpacing: '-0.03em', lineHeight: '1.2' }}>
-            Ask your codebase <br/>
-            <span className="text-accent">anything.</span>
+            기술 문서에 <br/>
+            <span className="text-accent">물어보세요.</span>
           </h1>
           <p className="text-xl text-muted mb-10" style={{ maxWidth: '42rem', lineHeight: '1.6' }}>
-            Autonomous RAG agent that searches, evaluates, and understands your technical documentation to provide exact answers.
+            검색한 문서가 질문에 맞는지 스스로 채점하고, 맞지 않으면 질문을 고쳐 다시 찾습니다.
+            근거가 없으면 지어내지 않고 모른다고 답합니다.
           </p>
           
           <div className="w-full flex flex-col md:flex-row gap-4 justify-center" style={{ maxWidth: '42rem' }}>
@@ -192,26 +193,29 @@ function Home() {
       <section className="container features-section">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div className="card flex flex-col items-start text-left">
-            <div className="tag mb-5">Ingest</div>
-            <h3 className="text-xl font-semibold mb-3">Automated Indexing</h3>
+            <div className="tag mb-5">수집</div>
+            <h3 className="text-xl font-semibold mb-3">넣기 전에 확인</h3>
             <p className="text-muted text-sm" style={{ lineHeight: '1.6' }}>
-              Connect your GitHub repos, website docs, or PDF files. The agent automatically chunks and vectorizes your data.
+              GitHub 레포·웹페이지·PDF를 색인합니다. 수집 전에 어떤 문서가 몇 청크로
+              들어갈지 미리 보여주므로, 테스트 코드나 자동 생성 문서가 섞이는 것을 막습니다.
             </p>
           </div>
-          
+
           <div className="card highlighted flex flex-col items-start text-left">
-            <div className="tag mb-5" style={{ color: 'var(--accent)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>Agentic</div>
-            <h3 className="text-xl font-semibold mb-3">Self-Reflective RAG</h3>
+            <div className="tag mb-5" style={{ color: 'var(--accent)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>에이전트</div>
+            <h3 className="text-xl font-semibold mb-3">스스로 검증하는 검색</h3>
             <p className="text-muted text-sm" style={{ lineHeight: '1.6' }}>
-              Built with LangGraph. It evaluates its own search results and automatically rewrites queries if needed.
+              LangGraph 순환 그래프로 동작합니다. 검색 결과를 채점해 관련 없는 문서를 버리고,
+              남는 게 없으면 질문을 고쳐 다시 검색합니다. 두 번까지 시도하고 멈춥니다.
             </p>
           </div>
-          
+
           <div className="card flex flex-col items-start text-left">
-            <div className="tag mb-5">Cloud Native RAG</div>
-            <h3 className="text-xl font-semibold mb-3">Gemini & Pinecone</h3>
+            <div className="tag mb-5">구성</div>
+            <h3 className="text-xl font-semibold mb-3">로컬 임베딩 + Gemini</h3>
             <p className="text-muted text-sm" style={{ lineHeight: '1.6' }}>
-              Runs on Google's Gemini 2.5 Flash, with local HuggingFace embeddings and Pinecone Vector DB. Maximum performance and seamless scalability.
+              임베딩은 BAAI/bge-m3로 로컬에서 처리해 수집에 API 비용이 들지 않습니다.
+              답변 생성만 Gemini 2.5 Flash를 쓰고, 검색은 Pinecone이 맡습니다.
             </p>
           </div>
         </div>

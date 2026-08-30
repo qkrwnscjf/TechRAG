@@ -119,6 +119,24 @@ ID 기반으로 삭제합니다.
 **수집 전 미리보기**: `GET /api/ingest/preview?url=...` 은 얕은 클론과 청킹까지만 수행하고
 임베딩은 하지 않습니다. 대상 파일 수·청크 수·대표 문서 내용을 몇 초 만에 확인할 수 있어,
 문서를 다른 곳으로 이관해 README 만 남은 레포를 적재하는 사고를 막습니다.
+청크 수는 어림이 아니라 실제 청커를 돌린 값이라, **청크 수 × 약 0.45초** 로 수집 시간을
+미리 계산할 수 있습니다.
+
+**수집 필터는 문서마다 따로 저장됩니다.** 버려야 할 경로는 레포마다 다릅니다
+(vLLM 은 `rust/`·`fixtures/`, Prefect 는 `api-ref/`·`plans/`). 그런데 필터가 전역 설정
+하나뿐이면, 다른 레포를 넣으려고 설정을 바꾼 뒤 야간 스케줄러가 기존 문서를 **바뀐 필터로**
+재수집해 색인을 조용히 망가뜨립니다. 그래서 수집에 사용한 필터를 문서와 함께 기록하고,
+재수집할 때 그 필터를 다시 씁니다.
+
+필터는 다음 순서로 정해집니다.
+
+| 순위 | 출처 | 언제 |
+|---|---|---|
+| 1 | 요청 본문의 `include_ext` / `exclude_paths` | 새 레포를 넣을 때 |
+| 2 | 그 문서가 이전에 사용한 필터 | 재수집(스케줄러 포함) |
+| 3 | 전역 설정 (`.env`) | 위 둘이 없을 때 |
+
+덕분에 레포를 추가할 때 `.env` 를 고칠 필요가 없습니다.
 
 ## 3. 멀티모달 — 다이어그램을 텍스트로
 
@@ -279,8 +297,23 @@ docker compose up -d --build
 | 메서드 | 경로 | 설명 |
 |---|---|---|
 | `GET` | `/api/stream?q=<질문>&thread_id=<세션ID>` | SSE 스트리밍 응답 |
-| `POST` | `/api/ingest` | 문서 수집 (`{"url": "..."}`). `status`: `ok` / `partial` / `error` |
+| `POST` | `/api/ingest` | 문서 수집. `status`: `ok` / `partial` / `error` |
 | `GET` | `/api/ingest/preview?url=<레포URL>` | 수집 전 미리보기. 임베딩 없이 파일 수·청크 수·대표 문서 확인 |
+
+수집·미리보기 모두 필터를 요청에 실을 수 있습니다.
+
+```jsonc
+POST /api/ingest
+{
+  "url": "https://github.com/vllm-project/vllm",
+  "include_ext": ".md,.mdx",                    // 생략 시 저장된 필터 → 전역 설정
+  "exclude_paths": "rust/,fixtures/,api-ref"    // 경로에 이 조각이 있으면 건너뜀
+}
+```
+
+```
+GET /api/ingest/preview?url=<레포URL>&include_ext=.md,.mdx&exclude_paths=blog,changelog
+```
 | `GET` | `/api/docs` | 수집된 문서 목록 |
 | `DELETE` | `/api/docs?url=<URL>` | 문서 삭제 (Pinecone 벡터 + SQLite 기록) |
 | `GET` | `/api/health` | 헬스체크 |

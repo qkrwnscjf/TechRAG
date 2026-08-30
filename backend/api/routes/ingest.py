@@ -9,7 +9,10 @@ router = APIRouter()
 
 @router.post("/ingest", response_model=IngestResponse)
 def ingest_document(req: IngestRequest):
-    status, message, chunks_added = process_url(req.url, force=True)
+    status, message, chunks_added = process_url(
+        req.url, force=True,
+        include_ext=req.include_ext, exclude_paths=req.exclude_paths,
+    )
     if status == 'error':
         return IngestResponse(status="error", message=message)
     if status == 'partial':
@@ -21,7 +24,7 @@ def ingest_document(req: IngestRequest):
     return IngestResponse(status="ok", chunks_added=chunks_added, source=req.url, message=message)
 
 @router.get("/ingest/preview")
-def preview_document(url: str):
+def preview_document(url: str, include_ext: str = None, exclude_paths: str = None):
     """
     수집 전에 대상 레포에 무엇이 들어 있는지 확인한다.
 
@@ -32,7 +35,11 @@ def preview_document(url: str):
     if "github.com" not in url:
         raise HTTPException(status_code=400, detail="현재 GitHub 레포 URL 만 지원합니다.")
     try:
-        return preview_github(url)
+        return preview_github(
+            url,
+            include_exts=[x.strip() for x in include_ext.split(',')] if include_ext else None,
+            excludes=[x.strip() for x in exclude_paths.split(',')] if exclude_paths else None,
+        )
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"미리보기 실패: {e}")
 

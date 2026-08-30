@@ -90,15 +90,19 @@ def notebook_to_text(raw: str) -> str:
 
 
 
-def _build_file_filter():
+def _build_file_filter(include_exts=None, excludes=None):
     """
     GitHub 레포에서 수집할 파일을 고르는 필터.
 
     실제 수집(load_from_url)과 미리보기(preview_github)가 **같은 기준**을 써야
     미리보기가 의미를 갖는다. 그래서 한 곳에서만 정의한다.
+
+    include_exts / excludes 를 넘기면 전역 설정 대신 그것을 쓴다.
+    수집 필터는 레포마다 달라야 하는데 설정은 전역 하나뿐이라, 호출 시점에
+    문서별 필터를 주입할 수 있어야 한다. (pipeline 이 저장된 필터를 넘긴다.)
     """
-    excludes = get_md_excludes()
-    include_exts = get_include_exts()
+    excludes = get_md_excludes() if excludes is None else excludes
+    include_exts = get_include_exts() if include_exts is None else include_exts
 
     def _keep(file_path: str) -> bool:
         lowered = file_path.lower()
@@ -119,7 +123,7 @@ def _shallow_clone(url: str, dest: str):
     return repo, branch
 
 
-def preview_github(url: str, sample_n: int = 6) -> dict:
+def preview_github(url: str, sample_n: int = 6, include_exts=None, excludes=None) -> dict:
     """
     수집하지 않고 대상 문서를 미리 확인한다.
 
@@ -130,7 +134,7 @@ def preview_github(url: str, sample_n: int = 6) -> dict:
     """
     from ingest.chunker import chunk_documents
 
-    keep = _build_file_filter()
+    keep = _build_file_filter(include_exts, excludes)
     temp_dir = tempfile.mkdtemp()
     try:
         _, branch = _shallow_clone(url, temp_dir)
@@ -173,7 +177,7 @@ def preview_github(url: str, sample_n: int = 6) -> dict:
         shutil.rmtree(temp_dir, ignore_errors=True)
 
 
-def load_from_url(url: str) -> List[Document]:
+def load_from_url(url: str, include_exts=None, excludes=None) -> List[Document]:
     """
     - github.com -> GitLoader
     - .pdf -> PyMuPDFLoader
@@ -184,7 +188,7 @@ def load_from_url(url: str) -> List[Document]:
     now_str = datetime.now().isoformat()
 
     if "github.com" in parsed_url.netloc:
-        _keep = _build_file_filter()
+        _keep = _build_file_filter(include_exts, excludes)
 
         temp_dir = tempfile.mkdtemp()
         try:

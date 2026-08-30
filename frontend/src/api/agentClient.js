@@ -33,11 +33,31 @@ export function resetSession() {
 }
 
 export const agentClient = {
-  ingestDoc: async (url) => {
+  // 수집 전 미리보기. 얕은 클론과 청킹까지만 하고 임베딩은 하지 않으므로 몇 초면 끝난다.
+  // 문서를 다른 곳으로 이관해 README 만 남은 레포나, 테스트 픽스처·자동생성 문서가
+  // 대부분인 레포를 그대로 적재하는 사고를 막기 위한 것이다.
+  previewDoc: async (url, { includeExt, excludePaths } = {}) => {
+    const params = new URLSearchParams({ url });
+    if (includeExt) params.set('include_ext', includeExt);
+    if (excludePaths) params.set('exclude_paths', excludePaths);
+    const res = await fetch(`${API_BASE}/ingest/preview?${params}`);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.detail || `미리보기 실패 (HTTP ${res.status})`);
+    }
+    return res.json();
+  },
+
+  ingestDoc: async (url, { includeExt, excludePaths } = {}) => {
     const res = await fetch(`${API_BASE}/ingest`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url })
+      body: JSON.stringify({
+        url,
+        // 값이 없으면 보내지 않는다. 백엔드가 "저장된 필터 -> 전역 설정" 순으로 처리한다.
+        ...(includeExt ? { include_ext: includeExt } : {}),
+        ...(excludePaths ? { exclude_paths: excludePaths } : {}),
+      })
     });
     return res.json();
   },

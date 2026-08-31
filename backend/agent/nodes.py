@@ -1,3 +1,4 @@
+import re
 import json
 import asyncio
 import logging
@@ -185,12 +186,68 @@ async def generator_node(state: AgentState) -> dict:
         "messages": [AIMessage(content=generation)]
     }
 
+# 정상적인 질문은 이보다 훨씬 짧다. 넘으면 설명문이 섞였다고 본다.
+_MAX_REWRITE_CHARS = 300
+_LABEL_RE = re.compile(r"^(?:improved|revised|rewritten|new)\s+question\s*:\s*(.*)$", re.I)
+
+
+def _clean_rewritten_question(raw: str, fallback: str) -> str:
+    """
+    재작성 결과에서 질문 한 줄만 뽑는다. 뽑지 못하면 원래 질문을 그대로 쓴다.
+
+    프롬프트로 형식을 지시하지만 LLM 출력은 확률적이라 어긋날 수 있고, 어긋나면
+    설명문 전체가 다음 검색 질의가 된다. 실제로 1,500자짜리 설명문이 검색어로
+    들어간 적이 있다. 오염된 질의로 검색하느니 원문으로 한 번 더 검색하는 편이 낫다 —
+    재검색 횟수는 graph.py 의 순환 방지가 2회로 막아 준다.
+    """
+    text = (raw or "").strip()
+    if not text:
+        return fallback
+
+    text = re.sub(r"^```[a-zA-Z]*\s*", "", text)
+    text = re.sub(r"\s*```$", "", text)
+    text = text.replace("**", "").strip()
+
+    lines = [ln.strip(" \t-*>#") for ln in text.splitlines()]
+    lines = [ln for ln in lines if ln]
+    if not lines:
+        return fallback
+
+    # "Improved Question:" 같은 라벨이 있으면 그 뒤(없으면 다음 줄)를 채택한다.
+    for i, ln in enumerate(lines):
+        m = _LABEL_RE.match(ln)
+        if m:
+            cand = m.group(1).strip() or (lines[i + 1] if i + 1 < len(lines) else "")
+            if cand:
+                lines = [cand]
+            break
+
+    candidate = next((ln for ln in lines if ln.endswith("?")), lines[0])
+    if not candidate or len(candidate) > _MAX_REWRITE_CHARS:
+        return fallback
+    return candidate
+
+
 def question_rewriter_node(state: AgentState) -> dict:
     question = state["question"]
+
+    # 웹 검색으로 분기된 질문을 "vectorstore 에 맞춰" 다듬으면 방향이 어긋난다.
+    target = ("a web search engine" if state.get("route") == "web_search"
+              else "a vector store of technical documentation")
+
     rewriter_chain = rewriter_prompt | llm | StrOutputParser()
-    
-    better_question = rewriter_chain.invoke({"question": question})
-    
+    raw = rewriter_chain.invoke({"question": question, "target": target})
+    better_question = _clean_rewritten_question(raw, question)
+
+    if better_question == question:
+        logger.warning("재작성 결과를 쓸 수 없어 원 질문을 유지합니다: %r", (raw or "")[:120])
+
     rewrite_count = state.get("rewrite_count", 0) + 1
-    new_trace = state.get("trace", []) + [{"node": "question_rewriter", "original": question, "new": better_question}]
+    new_trace = state.get("trace", []) + [{
+        "node": "question_rewriter",
+        "original": question,
+        "new": better_question,
+        # 모델이 형식을 어겨 걸러낸 경우를 화면과 로그에서 구분할 수 있게 남긴다.
+        "sanitized": better_question != (raw or "").strip(),
+    }]
     return {"question": better_question, "rewrite_count": rewrite_count, "trace": new_trace}

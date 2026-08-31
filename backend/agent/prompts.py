@@ -43,14 +43,28 @@ Answer:"""
 )
 
 # Rewriter prompt
+# 재작성 결과는 그대로 다음 검색 질의가 된다. 형식이 어긋나면 질의가 통째로 오염되므로
+# "질문만, 한 줄로" 를 명시한다.
+# 실측: 제약이 없던 이전 프롬프트가 "Here's an improved question... **Reasoning:** 1. ..."
+# 형태의 1,500자 설명문을 냈고, 그 덩어리가 검색어로 들어갔다.
+# 프롬프트만으로는 재발을 막지 못하므로 nodes.py 에서 한 번 더 걸러낸다.
+#
+# {target} 은 라우팅 결과에 따라 달라진다. 웹 검색으로 분기된 질문에까지
+# "vectorstore 에 맞춰 다듬어라" 고 지시하던 것을 고쳤다.
 rewriter_prompt = PromptTemplate.from_template(
-    """You are an expert question re-writer that converts an input question to a better version that is optimized
-for vectorstore retrieval. Look at the input and try to reason about the underlying semantic intent / meaning.
+    """You rewrite a search query so that it retrieves better results from {target}.
+Reason silently about the underlying semantic intent, then output one improved question.
 
-Here is the initial question:
+Rules:
+- Output ONLY the rewritten question. No preamble, no explanation, no reasoning, no labels.
+- No markdown, no bullet points, no bold text.
+- Exactly one line, under 200 characters.
+- Use the same language as the input question.
+
+Input question:
 {question}
 
-Formulate an improved question:"""
+Rewritten question:"""
 )
 
 # Contextualize prompt

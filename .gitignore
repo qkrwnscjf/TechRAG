@@ -54,3 +54,9 @@ yarn-error.log*
 
 # 에이전트 작업 설정 (로컬 전용)
 .claude/
+
+# 평가 산출물
+# sweep_corpus.json 은 대상 레포 본문을 그대로 담은 생성 파일이다(수십만 자).
+# build_sweep_corpus.py 로 언제든 재생성되므로 커밋하지 않는다.
+backend/eval/sweep_corpus.json
+backend/eval/**/sweep_results.json

@@ -1,0 +1,73 @@
+{
+  "measured": "2026-08-31",
+  "method": "메모리 내 코사인 검색 (Pinecone 미사용). LLM 호출 0회.",
+  "corpus": {
+    "source": "https://github.com/PrefectHQ/prefect",
+    "files": 67,
+    "chars": 326485,
+    "composition": {
+      "gold": 4,
+      "distractors": 9,
+      "random_fill": 54
+    },
+    "note": "방해 문서 9개는 베이스라인에서 실제로 정답을 밀어낸 문서를 강제 포함한 것"
+  },
+  "queries": {
+    "questions": 7,
+    "total": 14,
+    "languages": [
+      "ko",
+      "en"
+    ]
+  },
+  "k": 5,
+  "limitations": [
+    "표본 14질의. 1건 = 7.1%p",
+    "Prefect 부분집합. 전체 2,841청크가 아님",
+    "1024/128 미측정 (중단)",
+    "임베딩 소요 시간은 기기 부하 변동으로 설정 간 비교 불가. 비용은 청크 수로만 판단할 것"
+  ],
+  "results": [
+    {
+      "config": "256/50",
+      "chunk_size": 256,
+      "overlap": 50,
+      "chunks": 1976,
+      "recall@1": 0.714,
+      "recall@3": 0.929,
+      "recall@5": 0.929,
+      "mrr": 0.798
+    },
+    {
+      "config": "512/50",
+      "chunk_size": 512,
+      "overlap": 50,
+      "chunks": 901,
+      "recall@1": 0.714,
+      "recall@3": 0.714,
+      "recall@5": 0.714,
+      "mrr": 0.714
+    },
+    {
+      "config": "512/128",
+      "chunk_size": 512,
+      "overlap": 128,
+      "chunks": 947,
+      "recall@1": 0.714,
+      "recall@3": 0.714,
+      "recall@5": 0.786,
+      "mrr": 0.729
+    },
+    {
+      "config": "800/50",
+      "chunk_size": 800,
+      "overlap": 50,
+      "chunks": 546,
+      "recall@1": 0.571,
+      "recall@3": 0.714,
+      "recall@5": 0.786,
+      "mrr": 0.645
+    }
+  ],
+  "conclusion": "작은 청크가 모든 지표에서 우세. 다만 표본 14질의로는 운영 설정 변경 근거가 부족해 미적용."
+}

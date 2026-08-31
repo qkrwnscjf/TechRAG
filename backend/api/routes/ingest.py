@@ -32,14 +32,29 @@ def preview_document(url: str, include_ext: str = None, exclude_paths: str = Non
     문서를 이관해 마케팅 README 만 남은 레포를 그대로 수집하면
     검색이 그 문구를 물어오게 되므로, 넣기 전에 걸러내기 위한 것이다.
     """
+    # 미리보기는 GitHub 레포에만 제공한다.
+    # PDF/웹은 원본을 통째로 받아야 파일 수와 청크 수를 알 수 있고, 특히 웹 분기는
+    # 그 과정에서 Gemini Vision 을 호출한다. "임베딩 없이 공짜로 미리 본다"는 전제가
+    # 깨지므로 미리보기는 막되, 수집 자체는 정상 동작하므로 에러가 아니라 안내로 돌려준다.
+    # 400 으로 던지면 화면에 빨간 에러가 떠서, 되는 기능이 안 되는 것처럼 보인다.
     if "github.com" not in url:
-        raise HTTPException(status_code=400, detail="Only GitHub repository URLs are supported.")
+        kind = "PDF" if url.lower().endswith(".pdf") else "web page"
+        return {
+            "url": url,
+            "preview_supported": False,
+            "message": (
+                f"Preview is available for GitHub repositories only. "
+                f"This {kind} can still be ingested directly."
+            ),
+        }
     try:
-        return preview_github(
+        result = preview_github(
             url,
             include_exts=[x.strip() for x in include_ext.split(',')] if include_ext else None,
             excludes=[x.strip() for x in exclude_paths.split(',')] if exclude_paths else None,
         )
+        result["preview_supported"] = True
+        return result
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Preview failed: {e}")
 

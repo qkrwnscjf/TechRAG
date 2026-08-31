@@ -62,7 +62,13 @@ function Docs() {
     setPreview(null);
     setIngestMessage({ text: '', type: '' });
     try {
-      setPreview(await agentClient.previewDoc(ingestUrl.trim(), filterArgs()));
+      const res = await agentClient.previewDoc(ingestUrl.trim(), filterArgs());
+      setPreview(res);
+      // GitHub 레포가 아니면 미리보기는 없지만 수집은 정상 동작한다.
+      // 에러로 보이면 되는 기능을 안 되는 것으로 오해하므로 안내로 띄운다.
+      if (res && res.preview_supported === false) {
+        setIngestMessage({ text: res.message, type: 'info' });
+      }
     } catch (e) {
       setIngestMessage({ text: e.message, type: 'error' });
     } finally {
@@ -74,7 +80,7 @@ function Docs() {
     if (!ingestUrl.trim() || isIngesting) return;
     setIsIngesting(true);
     setIngestMessage({
-      text: preview
+      text: preview?.chunks > 0
         ? `Embedding ${preview.chunks.toLocaleString()} chunks. This takes about ${estimateMinutes(preview.chunks)} min.`
         : 'Analyzing the document and writing it to the vector store.',
       type: 'info',
@@ -178,7 +184,7 @@ function Docs() {
             </div>
           )}
 
-          {preview && (
+          {preview?.preview_supported && (
             <div className="mt-4 p-4 rounded-lg"
                  style={{ background: 'var(--muted)', border: '1px solid var(--border)' }}>
               <div className="flex flex-wrap gap-6 mb-4">

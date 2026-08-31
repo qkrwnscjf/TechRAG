@@ -8,10 +8,9 @@ from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_core.messages import HumanMessage, AIMessage
 
 from agent.state import AgentState
-from agent.prompts import (router_prompt, grader_prompt, batch_grader_prompt,
+from agent.prompts import (grader_prompt, batch_grader_prompt,
                            generator_prompt, rewriter_prompt, contextualize_prompt)
 from store.vectorstore import get_vector_store_manager
-from tools.web_search import search_web
 from agent import reranker
 from config import settings
 
@@ -40,57 +39,15 @@ def contextualize_node(state: AgentState) -> dict:
     return {"question": standalone_question, "trace": new_trace}
 
 # 최신성을 묻는 신호. 이런 질문만 웹 검색으로 보내고 나머지는 문서 검색이 기본이다.
-_WEB_SIGNALS = (
-    "최신", "최근", "요즘", "지금까지", "언제 나왔", "언제 출시",
-    "changelog", "체인지로그", "변경 이력", "릴리스 노트", "release note",
-    "latest", "newest", "news", "뉴스", "근황",
-)
-
-
-def router_node(state: AgentState) -> dict:
-    """
-    질문을 vectorstore / web_search 로 분기한다.
-
-    이전에는 이 판단에 LLM 을 1회 썼다. 그런데 이건 이분 분류이고, 기술 문서 챗봇에서는
-    vectorstore 가 압도적 기본값이다. Gemini 무료 티어가 분당 5회뿐이라 이 1회가 아깝다.
-    키워드 규칙으로 처리하고, LLM 라우팅이 필요하면 ROUTER_USE_LLM=true 로 되돌린다.
-    """
-    question = state["question"]
-    lowered = question.lower()
-
-    if any(sig in lowered for sig in _WEB_SIGNALS):
-        route, how = "web_search", "rule"
-    elif settings.router_use_llm:
-        router_chain = router_prompt | json_llm | JsonOutputParser()
-        try:
-            result = router_chain.invoke({"question": question})
-            route = result.get("route", "vectorstore")
-            if route not in ("vectorstore", "web_search"):
-                route = "vectorstore"
-        except Exception as e:
-            logger.warning("Router LLM failed, defaulting to vectorstore: %s", e)
-            route = "vectorstore"
-        how = "llm"
-    else:
-        route, how = "vectorstore", "rule"
-
-    new_trace = state.get("trace", []) + [{"node": "router", "decision": route, "method": how}]
-    return {"route": route, "trace": new_trace}
-
-
 def retriever_node(state: AgentState) -> dict:
     question = state["question"]
-    route = state.get("route", "vectorstore")
-    
+
     # 리랭커를 쓰면 검색 단계에서 후보를 넓게 뽑아야 의미가 있다.
     # (리랭커는 이미 들어온 후보의 순서만 바꾼다. 애초에 빠뜨린 문서는 되찾지 못한다.)
     k = settings.reranker_candidates if reranker.is_enabled() else settings.retriever_top_k
 
-    if route == "vectorstore":
-        retriever = get_vector_store_manager().as_retriever(k=k)
-        docs = retriever.invoke(question)
-    else:
-        docs = search_web(question, max_results=max(5, k))
+    retriever = get_vector_store_manager().as_retriever(k=k)
+    docs = retriever.invoke(question)
 
     new_trace = state.get("trace", []) + [{"node": "retriever", "doc_count": len(docs), "k": k}]
     return {"documents": docs, "trace": new_trace}
@@ -231,12 +188,8 @@ def _clean_rewritten_question(raw: str, fallback: str) -> str:
 def question_rewriter_node(state: AgentState) -> dict:
     question = state["question"]
 
-    # 웹 검색으로 분기된 질문을 "vectorstore 에 맞춰" 다듬으면 방향이 어긋난다.
-    target = ("a web search engine" if state.get("route") == "web_search"
-              else "a vector store of technical documentation")
-
     rewriter_chain = rewriter_prompt | llm | StrOutputParser()
-    raw = rewriter_chain.invoke({"question": question, "target": target})
+    raw = rewriter_chain.invoke({"question": question})
     better_question = _clean_rewritten_question(raw, question)
 
     if better_question == question:

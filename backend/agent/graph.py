@@ -7,7 +7,6 @@ import os
 from agent.state import AgentState
 from agent.nodes import (
     contextualize_node,
-    router_node,
     retriever_node,
     grader_node,
     generator_node,
@@ -34,7 +33,6 @@ workflow = StateGraph(AgentState)
 
 # Add nodes
 workflow.add_node("contextualize", contextualize_node)
-workflow.add_node("router", router_node)
 workflow.add_node("retriever", retriever_node)
 workflow.add_node("grader", grader_node)
 workflow.add_node("generator", generator_node)
@@ -43,8 +41,7 @@ workflow.add_node("question_rewriter", question_rewriter_node)
 # Build graph
 workflow.set_entry_point("contextualize")
 
-workflow.add_edge("contextualize", "router")
-workflow.add_edge("router", "retriever")
+workflow.add_edge("contextualize", "retriever")
 workflow.add_edge("retriever", "grader")
 
 workflow.add_conditional_edges(

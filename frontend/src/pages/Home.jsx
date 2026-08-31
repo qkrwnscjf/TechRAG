@@ -75,8 +75,6 @@ function describeStep(step) {
   switch (step.node) {
     case 'contextualize':
       return 'Rewrote the question to stand alone';
-    case 'router':
-      return `Routed to ${step.decision}${step.method === 'rule' ? ' (rule-based)' : ''}`;
     case 'retriever':
       return `Found ${step.doc_count} documents`;
     case 'grader':

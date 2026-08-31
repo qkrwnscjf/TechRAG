@@ -30,7 +30,6 @@ cryptography
 
 # --- Data Ingestion & Search Tools ---
 PyMuPDF>=1.23.21           # PDF 파싱
-duckduckgo-search>=6.0.0   # 웹 검색
 GitPython>=3.1.43          # GitHub 연동
 PyGithub                   # GitHub 연동
 beautifulsoup4             # 웹 크롤링 (WebBaseLoader 용)

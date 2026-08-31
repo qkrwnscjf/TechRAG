@@ -6,7 +6,6 @@ from langchain_core.messages import BaseMessage
 class AgentState(TypedDict):
     messages: Annotated[List[BaseMessage], operator.add]
     question: str
-    route: str                    # "vectorstore" | "web_search"
     documents: List[Document]
     generation: str
     rewrite_count: int            # 최대 2회 재작성 제한

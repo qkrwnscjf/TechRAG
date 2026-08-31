@@ -25,9 +25,8 @@ class Settings(BaseSettings):
     reranker_score_threshold: Optional[float] = None
 
     # --- LLM 호출 예산 ---
-    # Gemini 무료 티어는 분당 5회다. 질문당 호출 수를 줄이지 않으면 연속 대화가 불가능하다.
-    # 라우팅은 규칙으로 처리하고(0회), 채점은 전체 문서를 한 번에 묶어 보낸다(1회).
-    router_use_llm: bool = False
+    # Gemini 무료 티어는 분당 5회, 하루 20회다. 질문당 호출 수를 줄이지 않으면
+    # 연속 대화가 불가능하다. 채점은 전체 문서를 한 번에 묶어 1회로 처리한다.
 
     # --- 수집 필터 ---
     # GitLoader 는 레포의 .md 를 전부 긁어온다. 의존성/빌드 산출물이나 템플릿 문서가

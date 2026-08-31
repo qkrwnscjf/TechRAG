@@ -51,11 +51,11 @@
 이 프로젝트는 **자기 검증 루프**를 넣어 그 실패를 막습니다.
 
 ```
-contextualize ──▶ router ──▶ retriever ──▶ grader
-                                 ▲            │
-                                 │            ├─(관련 문서 없음, 재작성 2회 미만)
-                                 │            │        │
-                                 └── question_rewriter ┘
+contextualize ──▶ retriever ──▶ grader
+                       ▲            │
+                       │            ├─(관련 문서 없음, 재작성 2회 미만)
+                       │            │        │
+                       └── question_rewriter ┘
                                               │
                                               └─(관련 문서 있음 또는 재작성 2회 도달)
                                                        │
@@ -66,8 +66,7 @@ contextualize ──▶ router ──▶ retriever ──▶ grader
 | 노드 | 역할 |
 |---|---|
 | `contextualize` | "방금 그거 다시 설명해줘" 같은 후속 질문을 대화 이력으로 독립 문장으로 복원 |
-| `router` | 문서 검색 / 웹 검색 분기. 최신성 키워드는 규칙으로 판별 |
-| `retriever` | Pinecone dense 검색 또는 DuckDuckGo |
+| `retriever` | Pinecone dense 검색 |
 | `grader` | 검색된 문서가 질문에 답이 되는지 채점. 전체 문서를 한 번의 호출로 묶어 판정 |
 | `question_rewriter` | 관련 문서가 없으면 질문을 다른 각도로 재작성해 재검색 |
 | `generator` | 최종 답변 생성. 토큰이 만들어지는 즉시 SSE 로 전송 |

@@ -1,17 +1,6 @@
 from langchain_core.prompts import PromptTemplate
 
 # Router prompt
-router_prompt = PromptTemplate.from_template(
-    """You are an expert at routing a user question to a vectorstore or web search.
-The vectorstore contains documentation and code for technical libraries and tools.
-Use the vectorstore for questions on these topics. For recent events, changelogs, or general information, use web-search.
-Provide your decision in a JSON format with a single key 'route' and value either 'vectorstore' or 'web_search'.
-Do not provide any explanations or other text.
-
-Question: {question}
-"""
-)
-
 # Grader prompt
 grader_prompt = PromptTemplate.from_template(
     """You are a grader assessing relevance of a retrieved document to a user question.
@@ -49,10 +38,8 @@ Answer:"""
 # 형태의 1,500자 설명문을 냈고, 그 덩어리가 검색어로 들어갔다.
 # 프롬프트만으로는 재발을 막지 못하므로 nodes.py 에서 한 번 더 걸러낸다.
 #
-# {target} 은 라우팅 결과에 따라 달라진다. 웹 검색으로 분기된 질문에까지
-# "vectorstore 에 맞춰 다듬어라" 고 지시하던 것을 고쳤다.
 rewriter_prompt = PromptTemplate.from_template(
-    """You rewrite a search query so that it retrieves better results from {target}.
+    """You rewrite a search query so that it retrieves better results from a vector store of technical documentation.
 Reason silently about the underlying semantic intent, then output one improved question.
 
 Rules:

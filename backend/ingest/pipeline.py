@@ -38,13 +38,18 @@ def process_url(url: str, force: bool = False,
       3) 전역 설정(.env)              — 위 둘이 없을 때의 기본값
 
     2번이 핵심이다. 필터는 레포마다 달라야 하는데 전역 설정은 하나뿐이라,
-    다른 레포를 넣으려고 설정을 바꾸면 야간 스케줄러가 기존 문서를 바뀐 필터로
-    재수집해 색인을 조용히 망가뜨린다. 수집 당시 필터를 문서와 함께 저장해 그것을 막는다.
+    다른 레포를 넣으려고 설정을 바꾸면 기존 문서를 재수집할 때 바뀐 필터가 적용돼
+    색인을 조용히 망가뜨린다. 수집 당시 필터를 문서와 함께 저장해 그것을 막는다.
     """
     try:
         existing_doc = db.get_document(url)
 
-        if include_ext or exclude_paths:
+        # 필터는 GitHub 레포 수집(GitLoader)에서만 쓰인다. PDF·웹 로더는 무시하므로
+        # 저장해 봐야 documents.db 에 의미 없는 값만 남는다. 실제로 PDF 문서에
+        # ".md,.mdx" 와 레포용 제외 경로가 붙어 있었다.
+        if "github.com" not in url:
+            eff_ext = eff_exc = None
+        elif include_ext or exclude_paths:
             eff_ext, eff_exc = include_ext, exclude_paths
         elif existing_doc and existing_doc.get("include_ext"):
             eff_ext = existing_doc.get("include_ext")

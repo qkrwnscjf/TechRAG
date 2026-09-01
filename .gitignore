@@ -60,3 +60,5 @@ yarn-error.log*
 # build_sweep_corpus.py 로 언제든 재생성되므로 커밋하지 않는다.
 backend/eval/sweep_corpus.json
 backend/eval/**/sweep_results.json
+# corpus_dump.json 도 색인 원문 전량(수 MB)을 담은 생성 캐시다.
+backend/eval/**/corpus_dump.json

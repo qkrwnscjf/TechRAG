@@ -1,0 +1,1487 @@
+{
+  "k": 5,
+  "fuse_depth": 20,
+  "overall": {
+    "dense": {
+      "n": 54,
+      "r1": 0.7962962962962963,
+      "r3": 0.9074074074074074,
+      "r5": 0.9259259259259259,
+      "mrr": 0.8524691358024691
+    },
+    "bm25": {
+      "n": 54,
+      "r1": 0.48148148148148145,
+      "r3": 0.5740740740740741,
+      "r5": 0.6481481481481481,
+      "mrr": 0.5435185185185185
+    },
+    "rrf": {
+      "n": 54,
+      "r1": 0.7962962962962963,
+      "r3": 0.8703703703703703,
+      "r5": 0.9074074074074074,
+      "mrr": 0.8324074074074075
+    }
+  },
+  "rows": [
+    {
+      "id": "vllm-01",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "PagedAttention 커널에서 qk_max 는 어떤 목적으로 수집되나요?",
+      "gold": [
+        "docs/design/paged_attention.md"
+      ],
+      "dense": 1,
+      "bm25": 2,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/design/paged_attention.md",
+        "README.md",
+        "docs/design/paged_attention.md"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "docs/design/paged_attention.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md"
+      ]
+    },
+    {
+      "id": "vllm-02",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "PagedAttention 커널에서 warp 내부의 accs 리덕션은 어떻게 이뤄지나요?",
+      "gold": [
+        "docs/design/paged_attention.md"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md"
+      ],
+      "bm25_top3": [
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md"
+      ],
+      "rrf_top3": [
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md"
+      ]
+    },
+    {
+      "id": "vllm-03",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "vLLM 의 종단 요청 지연을 나타내는 Prometheus 메트릭 이름은 무엇인가요?",
+      "gold": [
+        "docs/design/metrics.md"
+      ],
+      "dense": 1,
+      "bm25": 5,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/design/metrics.md",
+        "docs/configuration/optimization.md",
+        "docs/design/metrics.md"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "docs/features/speculative_decoding/acceptance_metrics.md",
+        "docs/features/nixl_connector_usage.md"
+      ],
+      "rrf_top3": [
+        "docs/design/metrics.md",
+        "docs/design/metrics.md",
+        "docs/design/metrics.md"
+      ]
+    },
+    {
+      "id": "vllm-04",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "vLLM 에서 병렬 샘플링(n 파라미터)과 관련된 레거시 메트릭은 어떤 상태인가요?",
+      "gold": [
+        "docs/design/metrics.md"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/design/metrics.md",
+        "docs/design/metrics.md",
+        "docs/features/per_request_metrics.md"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "docs/design/metrics.md",
+        "docs/features/speculative_decoding/n_gram.md",
+        "README.md"
+      ]
+    },
+    {
+      "id": "vllm-05",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "tool_choice 가 auto 일 때 스키마 수준 제약을 적용하려면 어떤 환경변수가 필요한가요?",
+      "gold": [
+        "docs/features/tool_calling.md"
+      ],
+      "dense": 1,
+      "bm25": 4,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "content/docs/prompt-management/features/config.mdx"
+      ],
+      "rrf_top3": [
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md"
+      ]
+    },
+    {
+      "id": "vllm-06",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "GLM-4.5 모델을 쓸 때 지정해야 하는 tool call 파서 플래그는 무엇인가요?",
+      "gold": [
+        "docs/features/tool_calling.md"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md"
+      ],
+      "bm25_top3": [
+        "docs/features/tool_calling.md",
+        "docs/models/supported_models.md",
+        "docs/design/cuda_graphs_multimodal.md"
+      ],
+      "rrf_top3": [
+        "docs/features/tool_calling.md",
+        "docs/models/supported_models.md",
+        "docs/features/tool_calling.md"
+      ]
+    },
+    {
+      "id": "vllm-07",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "vLLM CPU 백엔드가 지원하는 파이썬 버전 범위는 어떻게 되나요?",
+      "gold": [
+        "docs/getting_started/installation/cpu.md"
+      ],
+      "dense": 2,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/getting_started/installation/cpu.x86.inc.md",
+        "docs/getting_started/installation/cpu.md",
+        "docs/getting_started/installation/cpu.x86.inc.md"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "docs/getting_started/installation/cpu.md",
+        "docs/getting_started/installation/cpu.md",
+        "docs/getting_started/installation/cpu.x86.inc.md"
+      ]
+    },
+    {
+      "id": "vllm-08",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "CPU 백엔드 관련 GitHub 이슈를 올릴 때 제목에 무엇을 넣어야 하나요?",
+      "gold": [
+        "docs/getting_started/installation/cpu.md"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/getting_started/installation/cpu.md",
+        "AGENTS.md",
+        "docs/governance/committers.md"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "docs/getting_started/installation/cpu.md",
+        "docs/governance/committers.md",
+        "docs/governance/committers.md"
+      ]
+    },
+    {
+      "id": "vllm-09",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "인증을 우회해 추론을 실행할 수 있는 비-/v1 엔드포인트에는 어떤 것들이 있나요?",
+      "gold": [
+        "docs/usage/security.md"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/usage/security.md",
+        "docs/usage/security.md",
+        "docs/serving/online_serving/openai_compatible_server.md"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "docs/usage/security.md",
+        "docs/usage/security.md",
+        "README.md"
+      ]
+    },
+    {
+      "id": "vllm-10",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "요청 파라미터 중 서버 자원을 고갈시킬 수 있는 것은 무엇이고 어느 엔드포인트에 있나요?",
+      "gold": [
+        "docs/usage/security.md"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/usage/security.md",
+        "docs/usage/security.md",
+        "docs/benchmarking/cli.md"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "docs/usage/security.md",
+        "README.md",
+        "docs/usage/security.md"
+      ]
+    },
+    {
+      "id": "vllm-11",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "모델이 단일 GPU 에 들어가지 않아 OOM 이 발생할 때 무엇을 참고해야 하나요?",
+      "gold": [
+        "docs/usage/troubleshooting.md"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/usage/troubleshooting.md",
+        "docs/configuration/conserving_memory.md",
+        "docs/serving/parallelism_scaling.md"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "docs/deployment/frameworks/runpod.md",
+        "docs/v3/examples/per-worker-task-concurrency.mdx"
+      ],
+      "rrf_top3": [
+        "docs/usage/troubleshooting.md",
+        "docs/deployment/frameworks/runpod.md",
+        "docs/configuration/optimization.md"
+      ]
+    },
+    {
+      "id": "vllm-12",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "vLLM 에서 pdb 브레이크포인트를 쓰려면 어떤 환경변수를 어떻게 설정해야 하나요?",
+      "gold": [
+        "docs/usage/troubleshooting.md"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/usage/troubleshooting.md",
+        "docs/usage/troubleshooting.md",
+        "docs/configuration/env_vars.md"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "docs/usage/troubleshooting.md",
+        "docs/usage/troubleshooting.md",
+        "README.md"
+      ]
+    },
+    {
+      "id": "prefect-01",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "prefect.yaml 의 push 섹션은 어떤 상황에서 가장 중요한가요?",
+      "gold": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 5,
+      "dense_top3": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx"
+      ],
+      "bm25_top3": [
+        "docs/v3/how-to-guides/deployments/store-flow-code.mdx",
+        "docs/v3/how-to-guides/deployments/store-flow-code.mdx",
+        "docs/v3/how-to-guides/deployment_infra/modal.mdx"
+      ],
+      "rrf_top3": [
+        "docs/v3/advanced/deploy-ci-cd.mdx",
+        "docs/v3/how-to-guides/deployments/store-flow-code.mdx",
+        "docs/v3/how-to-guides/deployment_infra/modal.mdx"
+      ]
+    },
+    {
+      "id": "prefect-02",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "배포의 concurrency_limit 필드는 어떤 형태를 받을 수 있나요?",
+      "gold": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/versioning.mdx",
+        "docs/v3/how-to-guides/workflows/global-concurrency-limits.mdx"
+      ],
+      "bm25_top3": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/concepts/deployments.mdx",
+        "docs/v3/how-to-guides/deployments/versioning.mdx"
+      ],
+      "rrf_top3": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/versioning.mdx",
+        "docs/v3/how-to-guides/workflows/tag-based-concurrency-limits.mdx"
+      ]
+    },
+    {
+      "id": "prefect-03",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "Prefect 태스크 실행에서 자동으로 추적되는 메타데이터는 무엇인가요?",
+      "gold": [
+        "docs/v3/concepts/tasks.mdx"
+      ],
+      "dense": null,
+      "bm25": null,
+      "rrf": null,
+      "dense_top3": [
+        "docs/v3/how-to-guides/migrate/upgrade-to-prefect-3.mdx",
+        "docs/v3/examples/run-api-sourced-etl.mdx",
+        "docs/v3/examples/run-dbt-with-prefect.mdx"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "docs/v3/how-to-guides/migrate/upgrade-to-prefect-3.mdx",
+        "README.md",
+        "docs/v3/examples/run-api-sourced-etl.mdx"
+      ]
+    },
+    {
+      "id": "prefect-04",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "Prefect 에서 태스크를 정의하는 데코레이터와 기본 사용법은 무엇인가요?",
+      "gold": [
+        "docs/v3/concepts/tasks.mdx"
+      ],
+      "dense": null,
+      "bm25": null,
+      "rrf": null,
+      "dense_top3": [
+        "docs/v3/how-to-guides/workflows/write-and-run.mdx",
+        "docs/v3/how-to-guides/workflows/assets.mdx",
+        "docs/v3/get-started/quickstart.mdx"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "docs/v3/how-to-guides/workflows/write-and-run.mdx",
+        "README.md",
+        "docs/v3/how-to-guides/workflows/assets.mdx"
+      ]
+    },
+    {
+      "id": "prefect-05",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "동시성 제한 태그를 사용하면 API 요청 수에 어떤 영향이 있나요?",
+      "gold": [
+        "docs/v3/concepts/rate-limits.mdx"
+      ],
+      "dense": 2,
+      "bm25": null,
+      "rrf": 3,
+      "dense_top3": [
+        "docs/v3/how-to-guides/workflows/tag-based-concurrency-limits.mdx",
+        "docs/v3/concepts/rate-limits.mdx",
+        "content/docs/api-and-data-platform/features/observations-api.mdx"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "docs/v3/how-to-guides/workflows/tag-based-concurrency-limits.mdx",
+        "README.md",
+        "docs/v3/concepts/rate-limits.mdx"
+      ]
+    },
+    {
+      "id": "prefect-06",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "rate limit 에 걸리지 않으려면 flow run 수를 어떻게 줄일 수 있나요?",
+      "gold": [
+        "docs/v3/concepts/rate-limits.mdx"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 3,
+      "dense_top3": [
+        "docs/v3/concepts/rate-limits.mdx",
+        "docs/v3/how-to-guides/workflows/global-concurrency-limits.mdx",
+        "docs/v3/concepts/rate-limits.mdx"
+      ],
+      "bm25_top3": [
+        "docs/v3/how-to-guides/workflows/global-concurrency-limits.mdx",
+        "docs/v3/how-to-guides/workflows/tag-based-concurrency-limits.mdx",
+        "docs/v3/concepts/global-concurrency-limits.mdx"
+      ],
+      "rrf_top3": [
+        "docs/v3/how-to-guides/workflows/global-concurrency-limits.mdx",
+        "docs/v3/concepts/flows.mdx",
+        "docs/v3/concepts/rate-limits.mdx"
+      ]
+    },
+    {
+      "id": "prefect-07",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "Airflow 개념과 Prefect 개념의 대응 관계는 어디에 정리되어 있나요?",
+      "gold": [
+        "docs/v3/how-to-guides/migrate/airflow.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx"
+      ],
+      "bm25_top3": [
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx"
+      ],
+      "rrf_top3": [
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-01",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "OpenAI Fast mode 요금 티어는 어떤 파라미터로 판별되나요?",
+      "gold": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "dense": 1,
+      "bm25": 2,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "rrf_top3": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-02",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "Langfuse 의 모델 가격 감사는 어떤 절차를 따르나요?",
+      "gold": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/security-and-guardrails.mdx"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "content/docs/observability/sdk/upgrade-path/js-v4-to-v5.mdx"
+      ],
+      "rrf_top3": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "README.md",
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-03",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "Langfuse 에서 Scores 는 무엇이며 어떤 평가 결과를 담나요?",
+      "gold": [
+        "content/docs/evaluation/core-concepts.mdx"
+      ],
+      "dense": 3,
+      "bm25": 5,
+      "rrf": null,
+      "dense_top3": [
+        "content/docs/evaluation/scores/overview.mdx",
+        "content/docs/evaluation/scores/overview.mdx",
+        "content/docs/evaluation/core-concepts.mdx"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "content/docs/evaluation/scores/data-model.mdx",
+        "content/docs/evaluation/scores/overview.mdx",
+        "content/docs/api-and-data-platform/features/scores-api.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-04",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "애플리케이션 성능을 일관되게 측정하려면 Langfuse 에서 무엇부터 만들어야 하나요?",
+      "gold": [
+        "content/docs/evaluation/core-concepts.mdx"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/evaluation/core-concepts.mdx",
+        "content/docs/evaluation/experiments/experiments-ci-cd.mdx",
+        "content/docs/evaluation/experiments/experiments-via-sdk.mdx"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "content/docs/evaluation/core-concepts.mdx",
+        "README.md",
+        "content/docs/evaluation/experiments/experiments-ci-cd.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-05",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "민감 데이터가 애플리케이션 밖으로 나가면 안 될 때 어느 지점에서 마스킹해야 하나요?",
+      "gold": [
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx",
+        "docs/v3/advanced/caching.mdx"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "content/docs/observability/features/masking.mdx",
+        "README.md",
+        "content/docs/observability/features/masking.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-06",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "새 Python SDK 에서 마스킹을 설정할 때 권장되는 방식은 무엇인가요?",
+      "gold": [
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/sdk/upgrade-path/index.mdx",
+        "content/docs/compatibility.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-07",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "대시보드 위젯의 조회 결과를 CSV 로 내보내려면 어떻게 하나요?",
+      "gold": [
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "dense": 1,
+      "bm25": null,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/evaluation/experiments/datasets.mdx",
+        "docs/models/pooling_models/scoring.md"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "docs/v3/how-to-guides/workflows/assets.mdx"
+      ],
+      "rrf_top3": [
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "README.md",
+        "content/docs/evaluation/experiments/datasets.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-08",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "Langfuse 대시보드를 다른 프로젝트로 옮기려면 어떤 기능을 사용하나요?",
+      "gold": [
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "dense": 5,
+      "bm25": null,
+      "rrf": null,
+      "dense_top3": [
+        "content/docs/index.mdx",
+        "content/docs/prompt-management/features/github-integration.mdx",
+        "content/docs/v4.mdx"
+      ],
+      "bm25_top3": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ],
+      "rrf_top3": [
+        "content/docs/observability/sdk/overview.mdx",
+        "content/docs/index.mdx",
+        "README.md"
+      ]
+    },
+    {
+      "id": "vllm-01",
+      "source": "vllm",
+      "lang": "en",
+      "query": "What is qk_max collected for in the PagedAttention kernel?",
+      "gold": [
+        "docs/design/paged_attention.md"
+      ],
+      "dense": 2,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "README.md",
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md"
+      ],
+      "bm25_top3": [
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md"
+      ],
+      "rrf_top3": [
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md",
+        "docs/README.md"
+      ]
+    },
+    {
+      "id": "vllm-02",
+      "source": "vllm",
+      "lang": "en",
+      "query": "How is the reduction of accs performed within a warp in the PagedAttention kernel?",
+      "gold": [
+        "docs/design/paged_attention.md"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md"
+      ],
+      "bm25_top3": [
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md"
+      ],
+      "rrf_top3": [
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md",
+        "docs/design/paged_attention.md"
+      ]
+    },
+    {
+      "id": "vllm-03",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which Prometheus metric reports end-to-end request latency in vLLM?",
+      "gold": [
+        "docs/design/metrics.md"
+      ],
+      "dense": 1,
+      "bm25": 2,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/design/metrics.md",
+        "docs/design/metrics.md",
+        "docs/design/metrics.md"
+      ],
+      "bm25_top3": [
+        "docs/benchmarking/cli.md",
+        "docs/design/metrics.md",
+        "docs/design/metrics.md"
+      ],
+      "rrf_top3": [
+        "docs/design/metrics.md",
+        "docs/benchmarking/cli.md",
+        "docs/design/metrics.md"
+      ]
+    },
+    {
+      "id": "vllm-04",
+      "source": "vllm",
+      "lang": "en",
+      "query": "What is the status of legacy metrics related to parallel sampling in vLLM?",
+      "gold": [
+        "docs/design/metrics.md"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/design/metrics.md",
+        "docs/design/metrics.md",
+        "docs/design/metrics.md"
+      ],
+      "bm25_top3": [
+        "docs/design/metrics.md",
+        "docs/design/metrics.md",
+        "docs/design/metrics.md"
+      ],
+      "rrf_top3": [
+        "docs/design/metrics.md",
+        "docs/design/metrics.md",
+        "docs/design/metrics.md"
+      ]
+    },
+    {
+      "id": "vllm-05",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which environment variable is required for schema-level constraints when tool_choice is auto?",
+      "gold": [
+        "docs/features/tool_calling.md"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md"
+      ],
+      "bm25_top3": [
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md"
+      ],
+      "rrf_top3": [
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md"
+      ]
+    },
+    {
+      "id": "vllm-06",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which tool-call parser flag should be used for GLM-4.5 models?",
+      "gold": [
+        "docs/features/tool_calling.md"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md"
+      ],
+      "bm25_top3": [
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md"
+      ],
+      "rrf_top3": [
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md",
+        "docs/features/tool_calling.md"
+      ]
+    },
+    {
+      "id": "vllm-07",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which Python versions does the vLLM CPU backend support?",
+      "gold": [
+        "docs/getting_started/installation/cpu.md"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/getting_started/installation/cpu.md",
+        "docs/getting_started/installation/cpu.x86.inc.md",
+        "docs/getting_started/installation/gpu.xpu.inc.md"
+      ],
+      "bm25_top3": [
+        "docs/getting_started/installation/cpu.md",
+        "docs/design/fusions.md",
+        "docs/features/multimodal_inputs.md"
+      ],
+      "rrf_top3": [
+        "docs/getting_started/installation/cpu.md",
+        "docs/getting_started/installation/cpu.x86.inc.md",
+        "docs/getting_started/installation/cpu.md"
+      ]
+    },
+    {
+      "id": "vllm-08",
+      "source": "vllm",
+      "lang": "en",
+      "query": "What should be added to the issue title when reporting a CPU backend problem on GitHub?",
+      "gold": [
+        "docs/getting_started/installation/cpu.md"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/getting_started/installation/cpu.md",
+        "AGENTS.md",
+        "content/docs/evaluation/troubleshooting-and-faq.mdx"
+      ],
+      "bm25_top3": [
+        "docs/getting_started/installation/cpu.md",
+        "docs/v3/advanced/developing-a-custom-worker.mdx",
+        "docs/v3/advanced/developing-a-custom-worker.mdx"
+      ],
+      "rrf_top3": [
+        "docs/getting_started/installation/cpu.md",
+        ".claude/commands/repro.md",
+        "docs/configuration/optimization.md"
+      ]
+    },
+    {
+      "id": "vllm-09",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which non-/v1 endpoints can be used to bypass authentication and run inference?",
+      "gold": [
+        "docs/usage/security.md"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/usage/security.md",
+        "docs/usage/security.md",
+        "docs/serving/online_serving/openai_compatible_server.md"
+      ],
+      "bm25_top3": [
+        "docs/usage/security.md",
+        "docs/usage/security.md",
+        "docs/serving/online_serving/openai_compatible_server.md"
+      ],
+      "rrf_top3": [
+        "docs/usage/security.md",
+        "docs/usage/security.md",
+        "docs/serving/online_serving/openai_compatible_server.md"
+      ]
+    },
+    {
+      "id": "vllm-10",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which request parameter can exhaust server resources, and in which endpoints does it appear?",
+      "gold": [
+        "docs/usage/security.md"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/usage/security.md",
+        "docs/benchmarking/cli.md",
+        "docs/v3/advanced/api-client.mdx"
+      ],
+      "bm25_top3": [
+        "docs/usage/security.md",
+        "docs/deployment/frameworks/bentoml.md",
+        "src/prefect/AGENTS.md"
+      ],
+      "rrf_top3": [
+        "docs/usage/security.md",
+        "docs/benchmarking/cli.md",
+        "docs/v3/concepts/rate-limits.mdx"
+      ]
+    },
+    {
+      "id": "vllm-11",
+      "source": "vllm",
+      "lang": "en",
+      "query": "What should I consult when a model is too large for a single GPU and causes OOM?",
+      "gold": [
+        "docs/usage/troubleshooting.md"
+      ],
+      "dense": 2,
+      "bm25": 5,
+      "rrf": 2,
+      "dense_top3": [
+        "docs/configuration/conserving_memory.md",
+        "docs/usage/troubleshooting.md",
+        "docs/serving/parallelism_scaling.md"
+      ],
+      "bm25_top3": [
+        "docs/serving/parallelism_scaling.md",
+        "docs/configuration/optimization.md",
+        "docs/deployment/frameworks/runpod.md"
+      ],
+      "rrf_top3": [
+        "docs/serving/parallelism_scaling.md",
+        "docs/usage/troubleshooting.md",
+        "docs/serving/parallelism_scaling.md"
+      ]
+    },
+    {
+      "id": "vllm-12",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which environment variable must be set to use stock pdb breakpoints in vLLM?",
+      "gold": [
+        "docs/usage/troubleshooting.md"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/usage/troubleshooting.md",
+        "docs/configuration/env_vars.md",
+        "docs/getting_started/quickstart.md"
+      ],
+      "bm25_top3": [
+        "docs/usage/troubleshooting.md",
+        "docs/usage/troubleshooting.md",
+        "docs/serving/integrations/codex.md"
+      ],
+      "rrf_top3": [
+        "docs/usage/troubleshooting.md",
+        "docs/usage/troubleshooting.md",
+        "docs/design/lora_resolver_plugins.md"
+      ]
+    },
+    {
+      "id": "prefect-01",
+      "source": "prefect",
+      "lang": "en",
+      "query": "In what situation is the push section of prefect.yaml most critical?",
+      "gold": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx"
+      ],
+      "bm25_top3": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/store-flow-code.mdx"
+      ],
+      "rrf_top3": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/store-flow-code.mdx"
+      ]
+    },
+    {
+      "id": "prefect-02",
+      "source": "prefect",
+      "lang": "en",
+      "query": "What forms can a deployment's concurrency_limit field accept?",
+      "gold": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/concepts/deployments.mdx"
+      ],
+      "bm25_top3": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "ui-v2/src/components/AGENTS.md",
+        "ui-v2/src/components/schemas/readme.md"
+      ],
+      "rrf_top3": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx",
+        "docs/v3/concepts/deployments.mdx"
+      ]
+    },
+    {
+      "id": "prefect-03",
+      "source": "prefect",
+      "lang": "en",
+      "query": "What metadata is tracked automatically for Prefect task runs?",
+      "gold": [
+        "docs/v3/concepts/tasks.mdx"
+      ],
+      "dense": null,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/v3/concepts/artifacts.mdx",
+        "docs/v3/how-to-guides/migrate/upgrade-to-prefect-3.mdx",
+        "docs/v3/examples/run-api-sourced-etl.mdx"
+      ],
+      "bm25_top3": [
+        "docs/v3/concepts/tasks.mdx",
+        "docs/v3/concepts/flows.mdx",
+        "docs/v3/advanced/assets.mdx"
+      ],
+      "rrf_top3": [
+        "docs/v3/concepts/tasks.mdx",
+        "docs/v3/concepts/runtime-context.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx"
+      ]
+    },
+    {
+      "id": "prefect-04",
+      "source": "prefect",
+      "lang": "en",
+      "query": "Which decorator defines a Prefect task and how is it used?",
+      "gold": [
+        "docs/v3/concepts/tasks.mdx"
+      ],
+      "dense": null,
+      "bm25": null,
+      "rrf": null,
+      "dense_top3": [
+        "docs/v3/examples/hello-world.mdx",
+        "docs/v3/how-to-guides/workflows/write-and-run.mdx",
+        "README.md"
+      ],
+      "bm25_top3": [
+        "content/docs/evaluation/evaluation-methods/llm-as-a-judge.mdx",
+        "docs/v3/how-to-guides/workflows/write-and-run.mdx",
+        "docs/v3/concepts/caching.mdx"
+      ],
+      "rrf_top3": [
+        "docs/v3/how-to-guides/workflows/assets.mdx",
+        "docs/v3/how-to-guides/workflows/write-and-run.mdx",
+        "docs/v3/concepts/caching.mdx"
+      ]
+    },
+    {
+      "id": "prefect-05",
+      "source": "prefect",
+      "lang": "en",
+      "query": "How does using a concurrency limit tag affect the number of API requests?",
+      "gold": [
+        "docs/v3/concepts/rate-limits.mdx"
+      ],
+      "dense": 1,
+      "bm25": 2,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/v3/concepts/rate-limits.mdx",
+        "docs/v3/concepts/tag-based-concurrency-limits.mdx",
+        "docs/v3/how-to-guides/workflows/tag-based-concurrency-limits.mdx"
+      ],
+      "bm25_top3": [
+        "docs/v3/how-to-guides/workflows/tag-based-concurrency-limits.mdx",
+        "docs/v3/concepts/rate-limits.mdx",
+        "docs/v3/concepts/tag-based-concurrency-limits.mdx"
+      ],
+      "rrf_top3": [
+        "docs/v3/concepts/rate-limits.mdx",
+        "docs/v3/concepts/tag-based-concurrency-limits.mdx",
+        "docs/v3/how-to-guides/workflows/tag-based-concurrency-limits.mdx"
+      ]
+    },
+    {
+      "id": "prefect-06",
+      "source": "prefect",
+      "lang": "en",
+      "query": "How can I reduce flow run volume to avoid hitting rate limits?",
+      "gold": [
+        "docs/v3/concepts/rate-limits.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/v3/concepts/rate-limits.mdx",
+        "docs/v3/concepts/rate-limits.mdx",
+        "src/prefect/AGENTS.md"
+      ],
+      "bm25_top3": [
+        "docs/v3/concepts/rate-limits.mdx",
+        "docs/v3/how-to-guides/workflows/global-concurrency-limits.mdx",
+        "docs/v3/concepts/global-concurrency-limits.mdx"
+      ],
+      "rrf_top3": [
+        "docs/v3/concepts/rate-limits.mdx",
+        "docs/v3/concepts/rate-limits.mdx",
+        "docs/v3/concepts/rate-limits.mdx"
+      ]
+    },
+    {
+      "id": "prefect-07",
+      "source": "prefect",
+      "lang": "en",
+      "query": "Where is the mapping between Airflow concepts and Prefect concepts documented?",
+      "gold": [
+        "docs/v3/how-to-guides/migrate/airflow.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx"
+      ],
+      "bm25_top3": [
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx"
+      ],
+      "rrf_top3": [
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx",
+        "docs/v3/how-to-guides/migrate/airflow.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-01",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "Which parameter determines OpenAI Fast mode pricing tiers?",
+      "gold": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "bm25_top3": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "rrf_top3": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-02",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "What workflow does the Langfuse model price audit follow?",
+      "gold": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "bm25_top3": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/administration/audit-logs.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "rrf_top3": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/observability/features/token-and-cost-tracking.mdx",
+        "content/docs/roadmap.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-03",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "What are Scores in Langfuse and what evaluation results do they store?",
+      "gold": [
+        "content/docs/evaluation/core-concepts.mdx"
+      ],
+      "dense": 2,
+      "bm25": 2,
+      "rrf": 4,
+      "dense_top3": [
+        "content/docs/evaluation/scores/overview.mdx",
+        "content/docs/evaluation/core-concepts.mdx",
+        "content/docs/evaluation/scores/overview.mdx"
+      ],
+      "bm25_top3": [
+        "content/docs/evaluation/scores/data-model.mdx",
+        "content/docs/evaluation/core-concepts.mdx",
+        "content/docs/evaluation/experiments/experiments-ci-cd.mdx"
+      ],
+      "rrf_top3": [
+        "content/docs/evaluation/scores/data-model.mdx",
+        "content/docs/evaluation/scores/overview.mdx",
+        "content/docs/evaluation/scores/overview.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-04",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "What should I create first to measure application performance consistently in Langfuse?",
+      "gold": [
+        "content/docs/evaluation/core-concepts.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 3,
+      "dense_top3": [
+        "content/docs/evaluation/core-concepts.mdx",
+        "content/docs/evaluation/experiments/experiments-via-sdk.mdx",
+        "content/docs/security-and-guardrails.mdx"
+      ],
+      "bm25_top3": [
+        "content/docs/evaluation/core-concepts.mdx",
+        "content/docs/observability/sdk/overview.mdx",
+        "docs/v3/get-started/quickstart.mdx"
+      ],
+      "rrf_top3": [
+        "content/docs/observability/sdk/overview.mdx",
+        "content/docs/prompt-management/overview.mdx",
+        "content/docs/evaluation/core-concepts.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-05",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "Where should masking be applied when sensitive data must not leave the application?",
+      "gold": [
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "bm25_top3": [
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "rrf_top3": [
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-06",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "What is the recommended masking setup for the new Python SDK?",
+      "gold": [
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/sdk/advanced-features.mdx",
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "bm25_top3": [
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "rrf_top3": [
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/features/masking.mdx",
+        "content/docs/observability/sdk/advanced-features.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-07",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "How do I export a dashboard widget's query result as CSV?",
+      "gold": [
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "bm25_top3": [
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "rrf_top3": [
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ]
+    },
+    {
+      "id": "langfuse-08",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "Which feature lets me move a Langfuse dashboard to another project?",
+      "gold": [
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "dense": 1,
+      "bm25": 1,
+      "rrf": 1,
+      "dense_top3": [
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "bm25_top3": [
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "rrf_top3": [
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx",
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ]
+    }
+  ]
+}

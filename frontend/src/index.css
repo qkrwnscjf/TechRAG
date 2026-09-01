@@ -124,11 +124,11 @@ code, pre {
 .btn-secondary {
   background-color: transparent;
   color: var(--foreground);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--outline);
 }
 .btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.25);
+  background-color: var(--overlay-hover);
+  border-color: var(--outline-strong);
 }
 
 .btn-ghost {
@@ -136,7 +136,7 @@ code, pre {
   color: var(--foreground);
 }
 .btn-ghost:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--overlay-hover);
 }
 
 /* Cards */
@@ -159,13 +159,13 @@ code, pre {
 }
 .card-interactive:hover {
   border-color: var(--border-hover);
-  background: rgba(26, 26, 36, 0.8);
+  background: var(--surface-2);
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 24px var(--shadow-color);
 }
 .card-interactive:active {
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 10px var(--shadow-color);
 }
 .card.highlighted {
   border: 1px solid rgba(245, 158, 11, 0.2);
@@ -222,16 +222,7 @@ code, pre {
   justify-content: center;
   align-items: center;
   padding-bottom: 6vh;
-  transition: min-height 400ms cubic-bezier(0.16, 1, 0.3, 1),
-              padding-bottom 400ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-/* 대화가 시작되면 히어로는 역할을 다했다. 답변에 자리를 내준다. */
-.hero-section.is-compact {
-  min-height: 0;
-  padding-top: 3rem;
-  padding-bottom: 2rem;
-}
-
 .features-section {
   padding-top: 4rem;
   padding-bottom: 8rem;
@@ -308,7 +299,7 @@ code, pre {
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--overlay-hover);
   border: 1px solid var(--border);
   font-size: 0.875rem;
   font-weight: 500;
@@ -324,7 +315,7 @@ code, pre {
 
 .header {
   border-bottom: 1px solid var(--border);
-  background: rgba(10, 10, 15, 0.8);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
@@ -404,7 +395,7 @@ code, pre {
 .text-foreground { color: var(--foreground); }
 /* .text-muted 와 별개다. JSX 가 두 이름을 모두 쓴다. */
 .text-muted-foreground { color: var(--muted-foreground); }
-.text-red-400 { color: #f87171; }
+.text-red-400 { color: var(--error); }
 .bg-\[var\(--muted\)\] { background-color: var(--muted); }
 
 /* --- 정렬 / 플렉스 --- */
@@ -482,7 +473,7 @@ code, pre {
 }
 .transition-all { transition: all 200ms ease-out; }
 .hover\:text-foreground:hover { color: var(--foreground); }
-.hover\:text-red-300:hover { color: #fca5a5; }
+.hover\:text-red-300:hover { color: var(--danger-text-hover); }
 .hover\:underline:hover { text-decoration: underline; }
 .hover\:border-gray-500:hover { border-color: var(--border-hover); }
 
@@ -503,12 +494,6 @@ code, pre {
   50% { opacity: 0.5; }
 }
 .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-
-/* --- 답변 본문 --- */
-/* 답변에는 긴 URL 이나 패키지 경로가 섞인다. 기본 줄바꿈 규칙으로는
-   끊기지 않아 카드 밖으로 넘치므로 어디서든 끊을 수 있게 한다.
-   코드 블록은 markdownComponents 에서 가로 스크롤을 따로 준다. */
-.answer-markdown { overflow-wrap: anywhere; }
 
 /* ==========================================================================
    상태 표시와 인터랙션
@@ -531,11 +516,11 @@ code, pre {
 .btn-secondary:disabled:hover,
 .btn-secondary[disabled]:hover {
   background-color: transparent;
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: var(--outline);
 }
 .btn-danger:disabled:hover,
 .btn-danger[disabled]:hover {
-  background-color: rgba(248, 113, 113, 0.1);
+  background-color: var(--danger-bg);
   color: var(--error);
 }
 .btn:disabled:active,
@@ -564,19 +549,19 @@ code, pre {
 }
 .doc-item:hover {
   border-color: var(--border-hover);
-  background-color: #1F1F2B;
+  background-color: var(--surface-3);
   transform: translateX(2px);
 }
 
 /* 삭제 버튼은 위험한 동작이다. 평소엔 조용히, 올렸을 때만 또렷하게. */
 .btn-danger {
-  background-color: rgba(248, 113, 113, 0.1);
+  background-color: var(--danger-bg);
   color: var(--error);
   transition: background-color 200ms ease-out, color 200ms ease-out;
 }
 .btn-danger:hover {
-  background-color: rgba(248, 113, 113, 0.18);
-  color: #FCA5A5;
+  background-color: var(--danger-bg-hover);
+  color: var(--danger-text-hover);
 }
 
 /* 에이전트 진행 단계. 노드 이름은 고정폭 알약으로 문장과 구분한다. */
@@ -613,5 +598,878 @@ code, pre {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   디자인 토큰
+   --------------------------------------------------------------------------
+   지금까지는 간격·모서리·그림자를 JSX 인라인 스타일로 그때그때 정했다.
+   같은 역할의 값이 파일마다 달라져 화면이 미묘하게 어긋난다.
+   척도를 여기서 한 번 정하고, 아래 컴포넌트 클래스는 그것만 쓴다.
+   ========================================================================== */
+:root {
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+
+  --shadow-1: 0 1px 2px var(--shadow-color);
+  --shadow-2: 0 8px 20px var(--shadow-color);
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 140ms;
+  --dur: 220ms;
+  --dur-slow: 380ms;
+
+  /* 읽기 좋은 줄 길이. 본문이 화면 폭만큼 늘어나면 눈이 줄을 놓친다. */
+  --measure: 44rem;
+}
+
+/* --- 공통 조각 --- */
+
+/* 제목보다 한 단 아래 위계를 만드는 작은 라벨 */
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.stack-2 > * + * { margin-top: var(--space-2); }
+.stack-3 > * + * { margin-top: var(--space-3); }
+.stack-4 > * + * { margin-top: var(--space-4); }
+.stack-6 > * + * { margin-top: var(--space-6); }
+
+/* ==========================================================================
+   대화 화면
+   --------------------------------------------------------------------------
+   백엔드는 thread_id 로 대화를 기억하고 contextualize 노드가 "그거" 를 풀어낸다.
+   그런데 화면은 질문마다 이전 것을 지워서 그 기능이 보이지 않았다.
+   턴을 쌓아 보여주고 입력창을 하단에 고정한다.
+   ========================================================================== */
+.chat {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+.conversation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  padding-block: var(--space-8) var(--space-6);
+}
+
+/* 질문 — 무엇을 물었는지가 답변보다 먼저 눈에 들어와야 한다. */
+.turn-q {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  margin-bottom: var(--space-5);
+}
+.q-badge {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  background: var(--accent-muted);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  margin-top: 2px;
+}
+.q-text {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.015em;
+  color: var(--foreground);
+  overflow-wrap: anywhere;
+}
+
+.turn-a { padding-left: calc(26px + var(--space-3)); }
+@media (max-width: 640px) { .turn-a { padding-left: 0; } }
+
+/* 진행 상황 — 끝나면 접어 둔다. 대화가 쌓일수록 트레이스가 화면을 덮는다. */
+.trace {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--trace-bg);
+  margin-bottom: var(--space-5);
+}
+.trace > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+  border-radius: var(--radius-md);
+  transition: color var(--dur) ease-out, background-color var(--dur) ease-out;
+}
+.trace > summary::-webkit-details-marker { display: none; }
+.trace > summary:hover { color: var(--foreground); background: var(--overlay-subtle); }
+.trace > summary::after {
+  content: '▾';
+  margin-left: auto;
+  font-size: 0.7rem;
+  transition: transform var(--dur) var(--ease);
+}
+.trace[open] > summary::after { transform: rotate(180deg); }
+.trace-body {
+  padding: 0 var(--space-3) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* 답변 본문 */
+.answer {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--foreground);
+  overflow-wrap: anywhere;
+}
+.answer > :first-child { margin-top: 0; }
+.answer > :last-child { margin-bottom: 0; }
+
+/* 생성 대기 — 문장 하나 대신 골격을 보여준다 */
+.skeleton-lines { display: flex; flex-direction: column; gap: var(--space-3); }
+.skeleton {
+  height: 0.85rem;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--muted) 25%, var(--skeleton-mid) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+.skeleton:nth-child(2) { width: 92%; }
+.skeleton:nth-child(3) { width: 68%; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* 출처 — 목록보다 칩이 스캔하기 쉽다 */
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px dashed var(--border);
+}
+.source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--chip-bg);
+  color: var(--muted-foreground);
+  font-size: 0.78rem;
+  text-decoration: none;
+  transition: color var(--dur) ease-out, border-color var(--dur) ease-out,
+              transform var(--dur) var(--ease);
+}
+.source-chip:hover {
+  color: var(--foreground);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+}
+.source-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 근거가 없을 때 다음 행동을 제시한다. "모른다" 로 끝내지 않는다. */
+.answer-hint {
+  margin-top: var(--space-4);
+  font-size: 0.82rem;
+  color: var(--muted-foreground);
+}
+.answer-hint a { color: var(--accent); text-decoration: none; }
+.answer-hint a:hover { text-decoration: underline; }
+
+/* 오류 상자 */
+.alert {
+  border: 1px solid var(--danger-border);
+  background: var(--danger-bg-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+.alert-title { font-weight: 600; color: var(--error); }
+.alert-detail {
+  margin-top: var(--space-2);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+}
+
+/* --- 입력창: 하단 고정 --- */
+.composer {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  padding-block: var(--space-4) var(--space-6);
+  /* 대화가 입력창 아래로 자연스럽게 사라지도록 위쪽을 페이드한다 */
+  background: linear-gradient(to bottom, transparent, var(--background) 42%);
+}
+.composer-row {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+.composer .input { flex: 1 1 auto; min-width: 0; }
+.composer-meta {
+  margin-top: var(--space-2);
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  font-size: 0.72rem;
+  color: var(--muted-foreground);
+}
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
+/* ==========================================================================
+   패널 (Docs)
+   --------------------------------------------------------------------------
+   수집과 관리를 카드 하나에 몰아넣으면 성격이 다른 두 작업이 섞여 보인다.
+   ========================================================================== */
+.panel {
+  background: var(--card);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border);
+}
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.panel-body { padding: var(--space-6); }
+
+.count-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
+/* 미리보기 통계 */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+  gap: var(--space-4);
+}
+.stat-label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+.stat-value {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+/* 비어 있는 상태 — 문장 하나보다 다음 행동을 유도한다 */
+.empty {
+  text-align: center;
+  padding: var(--space-10) var(--space-6);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--muted-foreground);
+}
+.empty-title { color: var(--foreground); font-weight: 500; margin-bottom: var(--space-2); }
+.empty-sub { font-size: 0.85rem; }
+
+/* 접히는 보조 영역 (수집 필터) */
+.disclosure > summary {
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
+  transition: color var(--dur) ease-out;
+}
+.disclosure > summary::-webkit-details-marker { display: none; }
+.disclosure > summary:hover { color: var(--foreground); }
+.disclosure > summary::before {
+  content: '▸';
+  font-size: 0.7rem;
+  transition: transform var(--dur) var(--ease);
+}
+.disclosure[open] > summary::before { transform: rotate(90deg); }
+
+.field-label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted-foreground);
+  margin-bottom: var(--space-1);
+}
+
+/* 안내 상자 (필터 설명 · 미리보기 결과) */
+.note {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+/* 문서 목록 — 경로와 메타를 두 줄로 나눈다 */
+.doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-height: 26rem;
+  overflow-y: auto;
+  padding-right: var(--space-2);
+}
+.doc-main { min-width: 0; flex: 1 1 auto; }
+.doc-url {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.doc-meta {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted-foreground);
+}
+
+/* 페이지 헤더 */
+.page-head {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+  text-align: center;
+  margin-bottom: var(--space-10);
+}
+.page-lead {
+  margin-top: var(--space-4);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--muted-foreground);
+}
+
+/* --- 대화가 시작되기 전에는 입력창을 고정하지 않는다 --- */
+.composer.is-static {
+  position: static;
+  background: none;
+  padding-block: 0 var(--space-8);
+}
+
+/* --- 답변 안의 마크다운 --- */
+/* 이전에는 이 값들을 markdownComponents 의 인라인 style 로 넣었다.
+   같은 규칙이 JS 안에 흩어져 있으면 나머지 화면과 어긋나기 시작한다. */
+.answer p { margin: var(--space-3) 0; }
+.answer h1, .answer h2, .answer h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: var(--space-6) 0 var(--space-2);
+}
+.md-list {
+  margin: var(--space-3) 0;
+  padding-left: var(--space-5);
+  list-style: disc;
+}
+.md-list-ordered { list-style: decimal; }
+.md-list li { margin: var(--space-1) 0; }
+
+.inline-code {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  font-size: 0.88em;
+}
+.code-block {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.65;
+  margin: var(--space-4) 0;
+}
+.code-block code { background: none; border: 0; padding: 0; }
+
+.link { color: var(--accent); text-decoration: none; }
+.link:hover { text-decoration: underline; }
+
+/* 강조된 기능 카드의 태그 */
+.tag-accent {
+  color: var(--accent);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* 예시 질문은 출처 칩과 같은 모양을 쓰되 버튼이므로 커서만 맞춘다 */
+button.source-chip {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* 출처 영역의 라벨은 칩들과 같은 줄에서 살짝 위로 정렬한다 */
+.sources .eyebrow {
+  align-self: center;
+  margin-right: var(--space-1);
+}
+
+/* --- 페이지 폭 --- */
+/* 대화(--measure)는 읽기 위한 폭이라 좁고, 폼과 목록이 있는 관리 화면은 조금 넓다.
+   두 값을 토큰으로 분리해 두면 화면마다 임의로 정하는 일이 없다. */
+:root { --page-width: 52rem; }
+
+.page-body {
+  max-width: var(--page-width);
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+.page-head { max-width: var(--page-width); }
+
+/* --- 작은 버튼 --- */
+/* 패널 헤더나 목록 행에 들어가는 버튼은 44px 이 과하다. */
+.btn-sm {
+  height: 36px;
+  padding: 0 var(--space-4);
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+}
+
+/* label 이 input 을 감싸는 형태이므로 사이 간격을 여기서 준다 */
+.field-label .input { margin-top: var(--space-1); }
+
+/* 목록 행 안의 삭제 버튼이 줄어들지 않게 한다 */
+.doc-item .btn { flex: none; margin-left: var(--space-4); }
+
+/* ==========================================================================
+   타이포그래피 · 모션 다듬기
+   --------------------------------------------------------------------------
+   두 가지 관례를 가져왔다.
+     · 자간을 크기에 따라 바꾼다(Apple). 큰 글자는 조이고 작은 글자는 푼다.
+       한 값(-0.025em)을 모든 크기에 쓰면 큰 제목은 헐겁고 라벨은 답답해 보인다.
+     · 이징과 지속시간을 체계로 둔다(Material 3). 등장은 감속(emphasized),
+       퇴장은 가속, 짧은 이동은 짧은 시간.
+   ========================================================================== */
+:root {
+  /* 크기별 자간 */
+  --tracking-display: -0.038em;
+  --tracking-title:   -0.021em;
+  --tracking-body:    -0.004em;
+  --tracking-label:    0.02em;
+
+  /* Material 3 계열 이징 */
+  --ease-emphasized:    cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized-in: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-spring:        cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* 이동 거리에 맞춘 지속시간 */
+  --dur-short:  120ms;
+  --dur-medium: 280ms;
+  --dur-long:   480ms;
+}
+
+/* 가변 폰트의 광학 크기와 자간을 실제로 쓰게 한다.
+   text-wrap: pretty 는 문단 끝의 외톨이 단어를 없앤다. */
+body {
+  font-optical-sizing: auto;
+  letter-spacing: var(--tracking-body);
+  text-wrap: pretty;
+}
+
+/* 제목은 줄을 고르게 나눈다. 두 줄 제목에서 마지막 줄에 한 단어만 남는 것을 막는다. */
+h1, h2, h3, .q-text, .panel-title, .empty-title {
+  text-wrap: balance;
+}
+
+/* 숫자는 고정폭으로. 스트리밍 중 단계 수나 청크 수가 바뀔 때 자리가 흔들리지 않는다. */
+.stat-value, .doc-meta, .count-pill, .trace-chip, kbd,
+.trace > summary, .composer-meta {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- 크기별 자간·행간 재조정 --- */
+.hero-title {
+  font-size: clamp(2.25rem, 7.2vw, 5rem);
+  line-height: 1.04;
+  letter-spacing: var(--tracking-display);
+}
+.page-title {
+  font-size: clamp(1.75rem, 5vw, 3.25rem);
+  line-height: 1.1;
+  letter-spacing: var(--tracking-display);
+}
+.q-text {
+  font-size: clamp(1.1rem, 2.2vw, 1.3rem);
+  line-height: 1.35;
+  letter-spacing: var(--tracking-title);
+}
+.panel-title { letter-spacing: var(--tracking-title); }
+.page-lead {
+  font-size: clamp(1rem, 1.6vw, 1.12rem);
+  line-height: 1.65;
+  letter-spacing: var(--tracking-body);
+}
+.answer { letter-spacing: var(--tracking-body); }
+
+/* 작은 라벨은 자간을 푼다 */
+.eyebrow, .stat-label, .tag {
+  letter-spacing: var(--tracking-label);
+}
+
+/* 고정폭 글꼴은 자간을 건드리지 않는다. body 의 음수 자간이 코드에까지
+   적용되면 글자가 서로 붙어 오히려 읽기 나빠진다. */
+code, pre, kbd, .font-mono, .trace-chip, .q-badge, .doc-meta, .count-pill {
+  letter-spacing: 0;
+}
+
+/* ==========================================================================
+   등장 연출
+   --------------------------------------------------------------------------
+   요소를 한꺼번에 띄우지 않고 순서를 준다. 시선이 위에서 아래로 따라가고,
+   화면이 "조립되는" 느낌 대신 "펼쳐지는" 느낌이 된다.
+   ========================================================================== */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 첫 화면 — 배지 → 제목 → 설명 → 입력창 순으로 60ms 간격 */
+.hero-badge      { animation: riseIn var(--dur-long) var(--ease-emphasized) both; }
+.hero-title      { animation: riseIn var(--dur-long) var(--ease-emphasized) 60ms both; }
+.hero-section .page-lead { animation: riseIn var(--dur-long) var(--ease-emphasized) 120ms both; }
+.composer.is-static      { animation: riseIn var(--dur-long) var(--ease-emphasized) 180ms both; }
+
+/* 기능 카드 — 좌에서 우로 */
+.features-section .grid > * {
+  animation: riseIn var(--dur-long) var(--ease-emphasized) both;
+}
+.features-section .grid > *:nth-child(1) { animation-delay: 240ms; }
+.features-section .grid > *:nth-child(2) { animation-delay: 320ms; }
+.features-section .grid > *:nth-child(3) { animation-delay: 400ms; }
+
+/* 문서 목록 — 행마다 조금씩 */
+.doc-list > li { animation: riseIn var(--dur-medium) var(--ease-emphasized) both; }
+.doc-list > li:nth-child(1) { animation-delay: 0ms; }
+.doc-list > li:nth-child(2) { animation-delay: 40ms; }
+.doc-list > li:nth-child(3) { animation-delay: 80ms; }
+.doc-list > li:nth-child(4) { animation-delay: 120ms; }
+.doc-list > li:nth-child(n+5) { animation-delay: 160ms; }
+
+/* 새 대화 턴은 조금 더 크게 올라온다 */
+.turn { animation: riseIn var(--dur-long) var(--ease-emphasized) both; }
+
+/* 스크롤로 들어올 때 나타나기. 지원하는 브라우저에서만 켠다. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .features-section .grid > * {
+      animation: riseIn linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 26%;
+    }
+  }
+}
+
+/* ==========================================================================
+   상호작용 다듬기
+   ========================================================================== */
+
+/* 버튼 — 누를 때 살짝 들어갔다 스프링으로 돌아온다 */
+.btn {
+  transition: background-color var(--dur-short) var(--ease-emphasized),
+              border-color var(--dur-short) var(--ease-emphasized),
+              color var(--dur-short) var(--ease-emphasized),
+              box-shadow var(--dur-medium) var(--ease-emphasized),
+              filter var(--dur-short) var(--ease-emphasized),
+              transform var(--dur-short) var(--ease-spring);
+}
+.btn:active { transform: scale(0.965); }
+
+/* 입력창 — 포커스 링이 퍼지듯 들어온다 */
+.input {
+  transition: border-color var(--dur-medium) var(--ease-emphasized),
+              box-shadow var(--dur-medium) var(--ease-emphasized),
+              background-color var(--dur-medium) var(--ease-emphasized);
+}
+
+/* 카드 호버도 같은 이징으로 통일 */
+.card-interactive {
+  transition: transform var(--dur-medium) var(--ease-emphasized),
+              border-color var(--dur-medium) var(--ease-emphasized),
+              background var(--dur-medium) var(--ease-emphasized),
+              box-shadow var(--dur-medium) var(--ease-emphasized);
+}
+.card-interactive:hover { transform: translateY(-5px); }
+
+.source-chip {
+  transition: color var(--dur-short) var(--ease-emphasized),
+              border-color var(--dur-short) var(--ease-emphasized),
+              background-color var(--dur-short) var(--ease-emphasized),
+              transform var(--dur-short) var(--ease-spring);
+}
+.source-chip:active { transform: scale(0.97); }
+
+/* 네비 밑줄도 emphasized 로 */
+.nav-link::after { transition: transform var(--dur-medium) var(--ease-emphasized); }
+
+/* 트레이스 화살표 회전 */
+.trace > summary::after,
+.disclosure > summary::before {
+  transition: transform var(--dur-medium) var(--ease-emphasized);
+}
+
+/* ==========================================================================
+   화면 전환 (View Transitions)
+   지원하지 않는 브라우저에서는 아무 일도 일어나지 않는다.
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: vtOut var(--dur-short) var(--ease-emphasized-in) both;
+  }
+  ::view-transition-new(root) {
+    animation: vtIn var(--dur-medium) var(--ease-emphasized) both;
+  }
+}
+@keyframes vtOut {
+  to { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes vtIn {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+/* ==========================================================================
+   테마 — 다크 / 라이트
+   --------------------------------------------------------------------------
+   위쪽 규칙들이 쓰던 rgba(255,255,255,…) 같은 값은 "어두운 바탕에 흰빛을 얹는다"
+   는 전제를 담고 있어서 밝은 배경에서 그대로 뒤집히지 않는다.
+   그래서 역할 이름을 가진 토큰으로 바꾸고, 팔레트만 갈아끼운다.
+
+   상태는 셋이다.
+     1) 선택 없음  -> 시스템 설정을 따른다 (prefers-color-scheme)
+     2) data-theme="light"  -> 시스템과 무관하게 라이트
+     3) data-theme="dark"   -> 시스템과 무관하게 다크
+
+   라이트 값은 두 번 적는다. 하나는 미디어쿼리 안(선택 없을 때), 하나는 명시 선택용.
+   CSS 만으로는 이 둘을 한 규칙으로 묶을 수 없다.
+   ========================================================================== */
+
+/* --- 다크 (기본값) --- */
+:root {
+  color-scheme: dark;
+
+  --surface-2:        rgba(26, 26, 36, 0.8);
+  --surface-3:        #1F1F2B;
+  --overlay-subtle:   rgba(255, 255, 255, 0.03);
+  --overlay-hover:    rgba(255, 255, 255, 0.05);
+  --outline:          rgba(255, 255, 255, 0.15);
+  --outline-strong:   rgba(255, 255, 255, 0.25);
+  --header-bg:        rgba(10, 10, 15, 0.8);
+  --shadow-color:     rgba(0, 0, 0, 0.35);
+  --skeleton-mid:     #24242F;
+  --trace-bg:         rgba(26, 26, 36, 0.4);
+  --chip-bg:          rgba(26, 26, 36, 0.6);
+  --orb-color:        rgba(245, 158, 11, 0.03);
+
+  /* 앰버를 글자에 쓸 때와 면에 쓸 때를 나눈다.
+     #F59E0B 는 흰 배경에서 대비 2.15:1 로 본문 기준(4.5:1)에 크게 못 미친다. */
+  --accent-text:      #F59E0B;
+
+  --danger-bg:        rgba(248, 113, 113, 0.10);
+  --danger-bg-hover:  rgba(248, 113, 113, 0.18);
+  --danger-bg-soft:   rgba(248, 113, 113, 0.08);
+  --danger-border:    rgba(248, 113, 113, 0.35);
+  --danger-text-hover:#FCA5A5;
+}
+
+/* --- 라이트 팔레트 (시스템 설정을 따를 때) --- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+
+    --background:       #FAFAF9;
+    --background-alt:   #F2F2F0;
+    --foreground:       #18181B;
+    --muted:            #F0F0ED;
+    --muted-foreground: #5C5C66;   /* 배경 대비 6.32:1 */
+    --accent-foreground:#1A1205;
+    --accent-muted:     rgba(245, 158, 11, 0.16);
+    --border:           rgba(0, 0, 0, 0.10);
+    --border-hover:     rgba(0, 0, 0, 0.20);
+    --card:             rgba(255, 255, 255, 0.72);
+    --card-solid:       #FFFFFF;
+
+    --surface-2:        rgba(255, 255, 255, 0.94);
+    --surface-3:        #EDEDEA;
+    --overlay-subtle:   rgba(0, 0, 0, 0.03);
+    --overlay-hover:    rgba(0, 0, 0, 0.05);
+    --outline:          rgba(0, 0, 0, 0.14);
+    --outline-strong:   rgba(0, 0, 0, 0.24);
+    --header-bg:        rgba(250, 250, 249, 0.82);
+    --shadow-color:     rgba(24, 24, 27, 0.10);
+    --skeleton-mid:     #E6E6E2;
+    --trace-bg:         rgba(255, 255, 255, 0.55);
+    --chip-bg:          rgba(255, 255, 255, 0.70);
+    --orb-color:        rgba(245, 158, 11, 0.10);
+
+    --accent-text:      #B45309;   /* 5.02:1 */
+    --info:             #5C5C66;
+    --success:          #15803D;   /* 4.81:1 */
+    --warn:             #B45309;   /* 5.02:1 */
+    --error:            #B91C1C;   /* 6.20:1 */
+
+    --danger-bg:        rgba(185, 28, 28, 0.08);
+    --danger-bg-hover:  rgba(185, 28, 28, 0.14);
+    --danger-bg-soft:   rgba(185, 28, 28, 0.06);
+    --danger-border:    rgba(185, 28, 28, 0.28);
+    --danger-text-hover:#991B1B;
+  }
+}
+
+/* --- 라이트 팔레트 (사용자가 직접 고른 경우) --- */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --background:       #FAFAF9;
+  --background-alt:   #F2F2F0;
+  --foreground:       #18181B;
+  --muted:            #F0F0ED;
+  --muted-foreground: #5C5C66;
+  --accent-foreground:#1A1205;
+  --accent-muted:     rgba(245, 158, 11, 0.16);
+  --border:           rgba(0, 0, 0, 0.10);
+  --border-hover:     rgba(0, 0, 0, 0.20);
+  --card:             rgba(255, 255, 255, 0.72);
+  --card-solid:       #FFFFFF;
+
+  --surface-2:        rgba(255, 255, 255, 0.94);
+  --surface-3:        #EDEDEA;
+  --overlay-subtle:   rgba(0, 0, 0, 0.03);
+  --overlay-hover:    rgba(0, 0, 0, 0.05);
+  --outline:          rgba(0, 0, 0, 0.14);
+  --outline-strong:   rgba(0, 0, 0, 0.24);
+  --header-bg:        rgba(250, 250, 249, 0.82);
+  --shadow-color:     rgba(24, 24, 27, 0.10);
+  --skeleton-mid:     #E6E6E2;
+  --trace-bg:         rgba(255, 255, 255, 0.55);
+  --chip-bg:          rgba(255, 255, 255, 0.70);
+  --orb-color:        rgba(245, 158, 11, 0.10);
+
+  --accent-text:      #B45309;
+  --info:             #5C5C66;
+  --success:          #15803D;
+  --warn:             #B45309;
+  --error:            #B91C1C;
+
+  --danger-bg:        rgba(185, 28, 28, 0.08);
+  --danger-bg-hover:  rgba(185, 28, 28, 0.14);
+  --danger-bg-soft:   rgba(185, 28, 28, 0.06);
+  --danger-border:    rgba(185, 28, 28, 0.28);
+  --danger-text-hover:#991B1B;
+}
+
+/* 앰비언트 오브는 팔레트를 따른다 */
+.ambient-orb { background: var(--orb-color); }
+
+/* 노이즈 텍스처는 흰 노이즈라 밝은 배경에서는 얼룩처럼 보인다. 라이트에서는 끈다. */
+:root[data-theme="light"] body { background-image: none; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) body { background-image: none; }
+}
+
+/* 앰버를 글자로 쓰는 곳은 --accent-text 를 쓴다 */
+.text-accent,
+.link,
+.answer-hint a,
+.q-badge,
+.tag-accent { color: var(--accent-text); }
+
+/* --- 테마 전환 버튼 --- */
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: color var(--dur-short) var(--ease-emphasized),
+              border-color var(--dur-short) var(--ease-emphasized),
+              background-color var(--dur-short) var(--ease-emphasized),
+              transform var(--dur-short) var(--ease-spring);
+}
+.theme-toggle:hover {
+  color: var(--foreground);
+  border-color: var(--border-hover);
+  background: var(--overlay-hover);
+}
+.theme-toggle:active { transform: scale(0.92); }
+.theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--accent);
+}
+.theme-toggle svg { width: 16px; height: 16px; display: block; }
+
+/* 팔레트가 바뀔 때 색이 툭 튀지 않게 한다.
+   전환 대상은 색뿐이다. 레이아웃 속성은 건드리지 않는다. */
+@media (prefers-reduced-motion: no-preference) {
+  body, .header, .panel, .card, .input, .trace, .source-chip, .doc-item, .note, .empty {
+    transition: background-color var(--dur-medium) var(--ease-emphasized),
+                border-color var(--dur-medium) var(--ease-emphasized),
+                color var(--dur-medium) var(--ease-emphasized);
   }
 }

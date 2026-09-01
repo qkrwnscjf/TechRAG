@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { agentClient } from '../api/agentClient';
 
+// 청크당 실측 처리 속도(초). 수집 시간을 미리 어림하는 데 쓴다.
+const SEC_PER_CHUNK = 0.45;
+const estimateMinutes = (chunks) => Math.max(1, Math.round((chunks * SEC_PER_CHUNK) / 60));
+
 function Docs() {
   const [ingestUrl, setIngestUrl] = useState('');
   const [isIngesting, setIsIngesting] = useState(false);
@@ -10,7 +14,6 @@ function Docs() {
 
   // 수집 필터. 버려야 할 경로는 레포마다 다르므로 화면에서 지정할 수 있게 한다.
   // 비워두면 백엔드가 "저장된 필터 -> 전역 설정" 순으로 알아서 정한다.
-  const [showFilters, setShowFilters] = useState(false);
   const [includeExt, setIncludeExt] = useState('');
   const [excludePaths, setExcludePaths] = useState('');
 
@@ -18,16 +21,10 @@ function Docs() {
   const [preview, setPreview] = useState(null);
   const [isPreviewing, setIsPreviewing] = useState(false);
 
-  // 청크당 실측 처리 속도(초). 수집 시간을 미리 어림하는 데 쓴다.
-  const SEC_PER_CHUNK = 0.45;
-
-  const estimateMinutes = (chunks) => Math.max(1, Math.round((chunks * SEC_PER_CHUNK) / 60));
-
   const fetchDocs = async () => {
     setIsFetchingDocs(true);
     try {
-      const data = await agentClient.getDocs();
-      setDocsList(data || []);
+      setDocsList((await agentClient.getDocs()) || []);
     } catch (e) {
       console.error(e);
     } finally {
@@ -105,170 +102,182 @@ function Docs() {
     }
   };
 
+  const totalChunks = docsList.reduce((sum, d) => sum + (d.chunk_count || 0), 0);
+
   return (
-    <div className="container section-spacing animate-in fade-in duration-500 flex flex-col items-center">
-      <div className="w-full flex flex-col text-center mb-10" style={{ maxWidth: '48rem' }}>
-        <h1 className="page-title mb-4 font-bold">
+    <div className="section-spacing animate-in fade-in duration-500">
+      <div className="page-head">
+        <h1 className="page-title font-bold">
           Document <span className="text-accent">Management</span>
         </h1>
-        <p className="text-lg text-muted">
-          Control the knowledge base. Ingest new documentation URLs or remove existing indexed data from Pinecone.
+        <p className="page-lead">
+          Control the knowledge base. Preview what a source would contribute before
+          spending time on embeddings, then ingest or remove it.
         </p>
       </div>
 
-      <div className="card w-full text-left" style={{ maxWidth: '48rem' }}>
-        {/* Ingest Section */}
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-foreground mb-4">Ingest a document</h3>
-
-          <div className="ingest-row">
-            <input
-              type="text"
-              className="input"
-              placeholder="e.g., https://github.com/vllm-project/vllm"
-              value={ingestUrl}
-              onChange={(e) => { setIngestUrl(e.target.value); setPreview(null); }}
-              onKeyDown={(e) => e.key === 'Enter' && handlePreview()}
-              disabled={isIngesting}
-            />
-            <button
-              className="btn btn-secondary"
-              onClick={handlePreview}
-              disabled={isPreviewing || isIngesting || !ingestUrl.trim()}
-              style={{ minWidth: '120px' }}
-            >
-              {isPreviewing ? 'Checking...' : 'Preview'}
-            </button>
-            <button
-              className="btn btn-primary"
-              onClick={handleIngest}
-              disabled={isIngesting || !ingestUrl.trim() || preview?.chunks === 0}
-              style={{ minWidth: '120px' }}
-            >
-              {isIngesting ? 'Ingesting...' : 'Ingest'}
-            </button>
+      <div className="page-body stack-6">
+        {/* ---------- 문서 추가 ---------- */}
+        <section className="panel">
+          <div className="panel-head">
+            <h2 className="panel-title">Add a document</h2>
           </div>
 
-          <button
-            className="text-sm text-muted mt-3"
-            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
-            onClick={() => setShowFilters((v) => !v)}
-          >
-            {showFilters ? '▾' : '▸'} Ingest filters {showFilters ? '' : '(optional)'}
-          </button>
-
-          {showFilters && (
-            <div className="flex flex-col gap-3 mt-3 p-4 rounded-lg"
-                 style={{ background: 'var(--muted)', border: '1px solid var(--border)' }}>
-              <p className="text-sm text-muted" style={{ lineHeight: '1.6' }}>
-                Which paths are noise differs per repository. Leave these empty to reuse the
-                filters this document was last ingested with, falling back to the server defaults.
-              </p>
-              <label className="text-sm text-muted">
-                Include extensions
-                <input
-                  type="text" className="input mt-1" placeholder=".md,.mdx"
-                  value={includeExt} onChange={(e) => setIncludeExt(e.target.value)}
-                  disabled={isIngesting}
-                />
-              </label>
-              <label className="text-sm text-muted">
-                Exclude path fragments
-                <input
-                  type="text" className="input mt-1"
-                  placeholder="api-ref,release-notes,tests/"
-                  value={excludePaths} onChange={(e) => setExcludePaths(e.target.value)}
-                  disabled={isIngesting}
-                />
-              </label>
+          <div className="panel-body stack-4">
+            <div className="ingest-row">
+              <input
+                type="text"
+                className="input"
+                placeholder="e.g., https://github.com/vllm-project/vllm"
+                value={ingestUrl}
+                onChange={(e) => { setIngestUrl(e.target.value); setPreview(null); }}
+                onKeyDown={(e) => e.key === 'Enter' && handlePreview()}
+                disabled={isIngesting}
+                aria-label="Source URL"
+              />
+              <button
+                className="btn btn-secondary"
+                onClick={handlePreview}
+                disabled={isPreviewing || isIngesting || !ingestUrl.trim()}
+              >
+                {isPreviewing ? 'Checking…' : 'Preview'}
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleIngest}
+                disabled={isIngesting || !ingestUrl.trim() || preview?.chunks === 0}
+              >
+                {isIngesting ? 'Ingesting…' : 'Ingest'}
+              </button>
             </div>
-          )}
 
-          {preview?.preview_supported && (
-            <div className="mt-4 p-4 rounded-lg"
-                 style={{ background: 'var(--muted)', border: '1px solid var(--border)' }}>
-              <div className="flex flex-wrap gap-6 mb-4">
-                {[
-                  ['Files', preview.files.toLocaleString()],
-                  ['Chunks', preview.chunks.toLocaleString()],
-                  ['Est. time', preview.chunks === 0 ? '-' : `${estimateMinutes(preview.chunks)} min`],
-                  ['Branch', preview.branch],
-                ].map(([label, value]) => (
-                  <div key={label} className="flex flex-col">
-                    <span className="text-sm text-muted">{label}</span>
-                    <span className="text-xl font-semibold text-foreground">{value}</span>
-                  </div>
-                ))}
+            <details className="disclosure">
+              <summary>Ingest filters</summary>
+              <div className="note stack-3" style={{ marginTop: 'var(--space-3)' }}>
+                <p className="text-sm text-muted">
+                  Which paths are noise differs per repository. Leave these empty to reuse the
+                  filters this document was last ingested with, falling back to the server defaults.
+                </p>
+                <label className="field-label">
+                  Include extensions
+                  <input
+                    type="text" className="input" placeholder=".md,.mdx"
+                    value={includeExt} onChange={(e) => setIncludeExt(e.target.value)}
+                    disabled={isIngesting}
+                  />
+                </label>
+                <label className="field-label">
+                  Exclude path fragments
+                  <input
+                    type="text" className="input" placeholder="api-ref,release-notes,tests/"
+                    value={excludePaths} onChange={(e) => setExcludePaths(e.target.value)}
+                    disabled={isIngesting}
+                  />
+                </label>
               </div>
+            </details>
 
-              {preview.chunks === 0 && (
-                <p className="text-sm mb-3 msg-warn">
-                  No documents match these filters. Check the extensions and exclude paths —
-                  ingesting as-is will fail.
-                </p>
-              )}
+            {preview?.preview_supported && (
+              <div className="note stack-4">
+                <div className="stat-grid">
+                  {[
+                    ['Files', preview.files.toLocaleString()],
+                    ['Chunks', preview.chunks.toLocaleString()],
+                    ['Est. time', preview.chunks === 0 ? '—' : `${estimateMinutes(preview.chunks)} min`],
+                    ['Branch', preview.branch],
+                  ].map(([label, value]) => (
+                    <div key={label}>
+                      <span className="stat-label">{label}</span>
+                      <span className="stat-value">{value}</span>
+                    </div>
+                  ))}
+                </div>
 
-              {preview.chunks > 4000 && (
-                <p className="text-sm mb-3 msg-warn">
-                  That is a lot of chunks. Consider adding exclude paths — generated API
-                  reference, release notes or test fixtures may have slipped in.
-                </p>
-              )}
+                {preview.chunks === 0 && (
+                  <p className="text-sm msg-warn">
+                    No documents match these filters. Check the extensions and exclude paths —
+                    ingesting as-is will fail.
+                  </p>
+                )}
 
-              <p className="text-sm text-muted mb-2">Largest documents — check these are real technical docs</p>
-              <ul className="flex flex-col gap-2">
-                {(preview.largest_files || []).slice(0, 5).map((f) => (
-                  <li key={f.path} className="text-sm">
-                    <span className="font-mono text-muted">
-                      {f.chars.toLocaleString()} chars
-                    </span>{' '}
-                    <span className="text-foreground">{f.path}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+                {preview.chunks > 4000 && (
+                  <p className="text-sm msg-warn">
+                    That is a lot of chunks. Consider adding exclude paths — generated API
+                    reference, release notes or test fixtures may have slipped in.
+                  </p>
+                )}
 
-          {ingestMessage.text && (
-            <p className={`text-sm mt-3 msg-${ingestMessage.type || 'info'}`}>
-              {ingestMessage.text}
-            </p>
-          )}
-        </div>
+                <div>
+                  <span className="eyebrow">Largest documents</span>
+                  <ul className="stack-2" style={{ marginTop: 'var(--space-2)' }}>
+                    {(preview.largest_files || []).slice(0, 5).map((f) => (
+                      <li key={f.path} className="text-sm">
+                        <span className="font-mono text-muted">{f.chars.toLocaleString()} chars</span>{' '}
+                        <span className="text-foreground">{f.path}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
 
-        {/* Document List Section */}
-        <div className="pt-8" style={{ borderTop: '1px solid var(--border)' }}>
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-semibold text-foreground">Indexed Documents ({docsList.length})</h3>
-            <button className="btn btn-secondary text-sm" style={{ padding: '0.5rem 1rem', height: '36px' }} onClick={fetchDocs} disabled={isFetchingDocs}>
-              Refresh
+            {ingestMessage.text && (
+              <p className={`text-sm msg-${ingestMessage.type || 'info'}`}>{ingestMessage.text}</p>
+            )}
+          </div>
+        </section>
+
+        {/* ---------- 색인된 문서 ---------- */}
+        <section className="panel">
+          <div className="panel-head">
+            <h2 className="panel-title">
+              Indexed documents <span className="count-pill">{docsList.length}</span>
+            </h2>
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={fetchDocs}
+              disabled={isFetchingDocs}
+            >
+              {isFetchingDocs ? 'Refreshing…' : 'Refresh'}
             </button>
           </div>
 
-          {docsList.length === 0 ? (
-            <div className="text-center py-12 bg-[var(--muted)] rounded-lg border" style={{ borderColor: 'var(--border)' }}>
-              <p className="text-muted-foreground">No documents indexed yet.</p>
-            </div>
-          ) : (
-            <ul className="flex flex-col gap-3 max-h-[400px] overflow-y-auto pr-2">
-              {docsList.map((doc, idx) => (
-                <li key={idx} className="doc-item flex justify-between items-center">
-                  <div className="flex flex-col overflow-hidden text-left flex-1 mr-4">
-                    <span className="text-base text-foreground font-medium truncate">{doc.url}</span>
-                    <span className="text-sm text-muted mt-1 font-mono">{doc.chunk_count} chunks • {new Date(doc.loaded_at).toLocaleString()}</span>
-                  </div>
-                  <button
-                    className="btn btn-danger text-sm"
-                    style={{ height: '36px', padding: '0 1rem' }}
-                    onClick={() => handleDeleteDoc(doc.url)}
-                  >
-                    Delete
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+          <div className="panel-body">
+            {docsList.length === 0 ? (
+              <div className="empty">
+                <p className="empty-title">Nothing indexed yet</p>
+                <p className="empty-sub">
+                  Paste a GitHub repository, a web page or a PDF above to get started.
+                </p>
+              </div>
+            ) : (
+              <>
+                <ul className="doc-list">
+                  {docsList.map((doc, idx) => (
+                    <li key={idx} className="doc-item flex justify-between items-center">
+                      <div className="doc-main">
+                        <span className="doc-url" title={doc.url}>{doc.url}</span>
+                        <span className="doc-meta">
+                          {doc.chunk_count.toLocaleString()} chunks ·{' '}
+                          {new Date(doc.loaded_at).toLocaleString()}
+                        </span>
+                      </div>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleDeleteDoc(doc.url)}
+                      >
+                        Delete
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <p className="text-sm text-muted" style={{ marginTop: 'var(--space-4)' }}>
+                  {totalChunks.toLocaleString()} chunks indexed across {docsList.length} sources.
+                </p>
+              </>
+            )}
+          </div>
+        </section>
       </div>
     </div>
   );

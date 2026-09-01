@@ -40,6 +40,9 @@ function describeStep(step) {
   if (!step) return 'Working…';
   switch (step.node) {
     case 'contextualize':
+      // method: first(첫 질문) / rule(규칙으로 건너뜀) / llm(실제 문맥화)
+      if (step.method === 'rule') return 'Self-contained question — no rewrite needed';
+      if (step.method === 'first') return 'First question — no prior context';
       return 'Rewrote the question to stand alone';
     case 'retriever':
       return `Found ${step.doc_count} documents`;

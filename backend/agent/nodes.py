@@ -20,11 +20,58 @@ logger = logging.getLogger(__name__)
 llm = ChatGoogleGenerativeAI(temperature=0, model="gemini-2.5-flash", google_api_key=settings.google_api_key, max_retries=3)
 json_llm = ChatGoogleGenerativeAI(temperature=0, model="gemini-2.5-flash", google_api_key=settings.google_api_key, max_retries=3)
 
+# 후속 질문이라고 전부 문맥이 필요한 것은 아니다.
+# "Prefect 캐시 정책은?" 처럼 그 자체로 완결된 질문에 LLM 을 한 번 더 쓰는 것은 낭비다.
+# 지시어·대명사·생략이 보일 때만 문맥화한다. 라우터를 규칙으로 내린 것과 같은 방식이다.
+#
+# 판정은 보수적이어야 한다. 잘못 건너뛰면 "그거 다시 설명해줘" 가 그대로 검색어가 되어
+# 답이 무너진다. 반대로 불필요하게 호출하는 것은 비용만 든다. 그래서 애매하면 호출한다.
+_ANAPHORA_KO = (
+    "그거", "그건", "그것", "그게", "그중", "그 중",
+    "저거", "저건", "저것", "이거", "이건", "이것", "이게",
+    "방금", "아까", "위에", "앞서", "이전", "직전",
+    "말한", "얘기한", "설명한", "언급한", "알려준", "답한",
+    "다시", "자세히", "더 ", "예시", "그럼", "그러면", "왜 ",
+)
+_ANAPHORA_EN = re.compile(
+    r"\b(it|its|that|this|these|those|them|they|there|"
+    r"again|above|previous|earlier|former|latter|"
+    r"more|else|instead|also|why)\b",
+    re.I,
+)
+# 앞 대화의 항목을 가리키는 생략형. 지시어가 없어도 앞 맥락 없이는 성립하지 않는다.
+# "What about the second one?" 이 대표적이다. 이런 질문을 그대로 검색하면
+# 관련 문서가 0건이 되고 재작성 루프가 돌아, 아낀 1회보다 더 많은 호출을 쓴다.
+_ELLIPTIC_EN = re.compile(
+    r"\b(what|how)\s+about\b|"
+    r"\b(the\s+)?(first|second|third|fourth|last|next|other|rest)\s+(one|ones)?\b",
+    re.I,
+)
+# 생략형 질문의 길이 기준. "왜?", "더 자세히" 처럼 짧으면 앞 맥락 없이는 성립하지 않는다.
+_ELLIPSIS_MAX_CHARS = 12
+
+
+def needs_context(question: str) -> bool:
+    """이 질문이 앞 대화에 기대고 있는가. 애매하면 True(=LLM 호출)를 낸다."""
+    q = (question or "").strip()
+    if len(q) < _ELLIPSIS_MAX_CHARS:
+        return True
+    low = q.lower()
+    if any(w in low for w in _ANAPHORA_KO):
+        return True
+    return bool(_ANAPHORA_EN.search(low) or _ELLIPTIC_EN.search(low))
+
+
 def contextualize_node(state: AgentState) -> dict:
     question = state["question"]
     messages = state.get("messages", [])
-    
-    if len(messages) > 1:
+
+    if len(messages) <= 1:
+        standalone_question, method = question, "first"
+    elif not needs_context(question):
+        # 후속 질문이지만 그 자체로 완결돼 있다. LLM 0회.
+        standalone_question, method = question, "rule"
+    else:
         # 마지막 항목은 방금 들어온 질문이므로 제외하고, 그 앞에서 최근 N개만 쓴다.
         history = messages[:-1][-settings.history_window:]
         chat_history = "\n".join(
@@ -32,13 +79,14 @@ def contextualize_node(state: AgentState) -> dict:
         )
         chain = contextualize_prompt | llm | StrOutputParser()
         standalone_question = chain.invoke({"chat_history": chat_history, "question": question})
-    else:
-        standalone_question = question
+        method = "llm"
 
-    new_trace = state.get("trace", []) + [{"node": "contextualize", "standalone": standalone_question}]
+    new_trace = state.get("trace", []) + [
+        {"node": "contextualize", "standalone": standalone_question, "method": method}
+    ]
     return {"question": standalone_question, "trace": new_trace}
 
-# 최신성을 묻는 신호. 이런 질문만 웹 검색으로 보내고 나머지는 문서 검색이 기본이다.
+
 def retriever_node(state: AgentState) -> dict:
     question = state["question"]
 

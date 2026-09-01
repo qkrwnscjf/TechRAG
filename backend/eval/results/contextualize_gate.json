@@ -1,0 +1,220 @@
+{
+  "n": 20,
+  "tp": 10,
+  "fn": 0,
+  "tn": 8,
+  "fp": 2,
+  "skip_rate": 0.4,
+  "rows": [
+    {
+      "id": "fu-01",
+      "needs_context": true,
+      "prior": "Prefect 태스크의 캐시 정책은 어떻게 설정하나요?",
+      "question": "그거 다시 설명해줘",
+      "predicted": true,
+      "correct": true
+    },
+    {
+      "id": "fu-02",
+      "needs_context": true,
+      "prior": "Prefect 태스크의 캐시 정책은 어떻게 설정하나요?",
+      "question": "방금 말한 캐시 정책을 예시로 보여줘",
+      "predicted": true,
+      "correct": true
+    },
+    {
+      "id": "fu-03",
+      "needs_context": true,
+      "prior": "vLLM 은 CPU 백엔드를 지원하나요?",
+      "question": "왜?",
+      "predicted": true,
+      "correct": true
+    },
+    {
+      "id": "fu-04",
+      "needs_context": true,
+      "prior": "Langfuse 의 Scores 는 무엇인가요?",
+      "question": "더 자세히",
+      "predicted": true,
+      "correct": true
+    },
+    {
+      "id": "fu-05",
+      "needs_context": true,
+      "prior": "Prefect 태스크의 캐시 정책은 어떻게 설정하나요?",
+      "question": "그럼 만료는 어떻게 설정해?",
+      "predicted": true,
+      "correct": true
+    },
+    {
+      "id": "fu-06",
+      "needs_context": true,
+      "prior": "vLLM 의 tool calling 설정을 알려줘",
+      "question": "위에서 언급한 파라미터는 뭐야?",
+      "predicted": true,
+      "correct": true
+    },
+    {
+      "id": "fu-07",
+      "needs_context": true,
+      "prior": "How does PagedAttention work in vLLM?",
+      "question": "Can you explain that again?",
+      "predicted": true,
+      "correct": true
+    },
+    {
+      "id": "fu-08",
+      "needs_context": true,
+      "prior": "Prefect 배포에서 push 와 pull 섹션은 각각 무엇인가요?",
+      "question": "What about the second one?",
+      "predicted": true,
+      "correct": true
+    },
+    {
+      "id": "fu-09",
+      "needs_context": true,
+      "prior": "Langfuse 의 masking 기능은 무엇인가요?",
+      "question": "How do I configure it?",
+      "predicted": true,
+      "correct": true
+    },
+    {
+      "id": "fu-10",
+      "needs_context": true,
+      "prior": "vLLM 이 지원하는 tool call 파서 종류를 알려줘",
+      "question": "그 중에 기본값은 뭐야?",
+      "predicted": true,
+      "correct": true
+    },
+    {
+      "id": "fu-11",
+      "needs_context": false,
+      "prior": "Prefect 태스크의 캐시 정책은 어떻게 설정하나요?",
+      "question": "vLLM CPU 백엔드가 지원하는 파이썬 버전 범위는 어떻게 되나요?",
+      "predicted": false,
+      "correct": true
+    },
+    {
+      "id": "fu-12",
+      "needs_context": false,
+      "prior": "Langfuse 의 Scores 는 무엇인가요?",
+      "question": "Prefect 배포의 concurrency_limit 필드는 어떤 형태를 받나요?",
+      "predicted": false,
+      "correct": true
+    },
+    {
+      "id": "fu-13",
+      "needs_context": false,
+      "prior": "vLLM 의 설치 방법을 알려줘",
+      "question": "Langfuse 에서 Scores 는 무엇이며 어떤 평가 결과를 담나요?",
+      "predicted": false,
+      "correct": true
+    },
+    {
+      "id": "fu-14",
+      "needs_context": false,
+      "prior": "Prefect 의 flow 개념을 설명해줘",
+      "question": "PagedAttention 커널에서 qk_max 는 어떤 목적으로 수집되나요?",
+      "predicted": false,
+      "correct": true
+    },
+    {
+      "id": "fu-15",
+      "needs_context": false,
+      "prior": "How do I install vLLM?",
+      "question": "Which tool-call parser flag should be used for GLM-4.5 models?",
+      "predicted": false,
+      "correct": true
+    },
+    {
+      "id": "fu-16",
+      "needs_context": false,
+      "prior": "What is Langfuse?",
+      "question": "How do I export a dashboard widget's query result as CSV?",
+      "predicted": false,
+      "correct": true
+    },
+    {
+      "id": "fu-17",
+      "needs_context": false,
+      "prior": "Prefect 의 rate limit 을 설명해줘",
+      "question": "vLLM 에서 pdb 브레이크포인트를 쓰려면 어떤 환경변수를 설정하나요?",
+      "predicted": false,
+      "correct": true
+    },
+    {
+      "id": "fu-18",
+      "needs_context": false,
+      "prior": "Langfuse 의 대시보드 기능을 알려줘",
+      "question": "Prefect 태스크 실행에서 자동으로 추적되는 메타데이터는 무엇인가요?",
+      "predicted": false,
+      "correct": true
+    },
+    {
+      "id": "fu-19",
+      "needs_context": false,
+      "prior": "vLLM 의 메트릭을 알려줘",
+      "question": "Prefect 의 캐시 정책을 더 알려줘",
+      "predicted": true,
+      "correct": false
+    },
+    {
+      "id": "fu-20",
+      "needs_context": false,
+      "prior": "Prefect 의 배포 방식을 알려줘",
+      "question": "Why does vLLM recommend disabling multiprocessing for debugging?",
+      "predicted": true,
+      "correct": false
+    }
+  ],
+  "verified": [
+    {
+      "id": "fu-11",
+      "question": "vLLM CPU 백엔드가 지원하는 파이썬 버전 범위는 어떻게 되나요?",
+      "llm_output": "vLLM CPU 백엔드가 지원하는 파이썬 버전 범위는 어떻게 되나요?",
+      "unchanged": true
+    },
+    {
+      "id": "fu-12",
+      "question": "Prefect 배포의 concurrency_limit 필드는 어떤 형태를 받나요?",
+      "llm_output": "Prefect 배포의 concurrency_limit 필드는 어떤 형태를 받나요?",
+      "unchanged": true
+    },
+    {
+      "id": "fu-13",
+      "question": "Langfuse 에서 Scores 는 무엇이며 어떤 평가 결과를 담나요?",
+      "llm_output": "Langfuse 에서 Scores 는 무엇이며 어떤 평가 결과를 담나요?",
+      "unchanged": true
+    },
+    {
+      "id": "fu-14",
+      "question": "PagedAttention 커널에서 qk_max 는 어떤 목적으로 수집되나요?",
+      "llm_output": "PagedAttention 커널에서 qk_max 는 어떤 목적으로 수집되나요?",
+      "unchanged": true
+    },
+    {
+      "id": "fu-15",
+      "question": "Which tool-call parser flag should be used for GLM-4.5 models?",
+      "llm_output": "Which tool-call parser flag should be used for GLM-4.5 models?",
+      "unchanged": true
+    },
+    {
+      "id": "fu-16",
+      "question": "How do I export a dashboard widget's query result as CSV?",
+      "llm_output": "How do I export a Langfuse dashboard widget's query result as CSV?",
+      "unchanged": false
+    },
+    {
+      "id": "fu-17",
+      "question": "vLLM 에서 pdb 브레이크포인트를 쓰려면 어떤 환경변수를 설정하나요?",
+      "llm_output": "vLLM 에서 pdb 브레이크포인트를 쓰려면 어떤 환경변수를 설정하나요?",
+      "unchanged": true
+    },
+    {
+      "id": "fu-18",
+      "question": "Prefect 태스크 실행에서 자동으로 추적되는 메타데이터는 무엇인가요?",
+      "llm_output": "Prefect 태스크 실행에서 자동으로 추적되는 메타데이터는 무엇인가요?",
+      "unchanged": true
+    }
+  ]
+}

@@ -1,0 +1,956 @@
+{
+  "k": 5,
+  "depths": [
+    10,
+    20
+  ],
+  "overall": {
+    "dense": {
+      "n": 54,
+      "r1": 0.7962962962962963,
+      "r3": 0.9074074074074074,
+      "r5": 0.9259259259259259,
+      "mrr": 0.8524691358024691
+    },
+    "rerank10": {
+      "n": 54,
+      "r1": 0.8703703703703703,
+      "r3": 0.9074074074074074,
+      "r5": 0.9259259259259259,
+      "mrr": 0.8925925925925926
+    },
+    "rerank20": {
+      "n": 54,
+      "r1": 0.8703703703703703,
+      "r3": 0.9074074074074074,
+      "r5": 0.9074074074074074,
+      "mrr": 0.8888888888888888
+    }
+  },
+  "rerank_ms": {
+    "10": [
+      10525.623321533203,
+      11901.839971542358,
+      9565.057754516602,
+      25199.108362197876,
+      29086.21335029602,
+      23542.285919189453,
+      21505.776166915894,
+      17736.85908317566,
+      21564.060926437378,
+      23350.867986679077,
+      20507.835388183594,
+      16954.468488693237,
+      19356.072902679443,
+      18864.197492599487,
+      17837.77642250061,
+      17793.56622695923,
+      18785.247564315796,
+      17827.56495475769,
+      20385.16664505005,
+      21085.028409957886,
+      18559.704542160034,
+      27538.3460521698,
+      17787.140130996704,
+      18780.53855895996,
+      18161.598682403564,
+      17062.281847000122,
+      17528.809547424316,
+      17724.896907806396,
+      18335.120916366577,
+      17499.287366867065,
+      17930.325269699097,
+      22613.06858062744,
+      19398.08678627014,
+      18605.28564453125,
+      17340.866327285767,
+      17460.420608520508,
+      17343.365907669067,
+      17040.51375389099,
+      17879.75311279297,
+      17417.15693473816,
+      18187.776565551758,
+      21367.088794708252,
+      18315.04225730896,
+      16609.530210494995,
+      18218.114137649536,
+      20569.002389907837,
+      19231.9118976593,
+      19545.87411880493,
+      18745.290517807007,
+      16982.064485549927,
+      18393.264293670654,
+      23900.025844573975,
+      13748.876571655273,
+      12982.08236694336
+    ],
+    "20": [
+      19736.15002632141,
+      18226.661920547485,
+      26498.653173446655,
+      56060.967683792114,
+      55240.633964538574,
+      40964.90669250488,
+      43067.2721862793,
+      33207.29041099548,
+      47928.95245552063,
+      46784.65747833252,
+      32906.71229362488,
+      40009.3138217926,
+      35451.39813423157,
+      37675.525188446045,
+      36063.11821937561,
+      35108.09397697449,
+      35432.618618011475,
+      38226.245641708374,
+      41622.62439727783,
+      39925.51612854004,
+      38185.67657470703,
+      45999.31979179382,
+      33324.17130470276,
+      33578.41086387634,
+      36320.549964904785,
+      34148.088216781616,
+      35760.05506515503,
+      35053.48038673401,
+      36364.744901657104,
+      36787.41931915283,
+      37194.20099258423,
+      45992.86484718323,
+      38849.06268119812,
+      36494.322061538696,
+      35268.62335205078,
+      34546.62322998047,
+      36323.83227348328,
+      36699.9671459198,
+      35805.49478530884,
+      33867.72108078003,
+      37749.86505508423,
+      47365.54574966431,
+      34754.64367866516,
+      36160.81094741821,
+      35378.005266189575,
+      34686.34533882141,
+      35474.63130950928,
+      36180.94301223755,
+      37225.80981254578,
+      35288.063287734985,
+      37501.67989730835,
+      60308.974504470825,
+      38333.26458930969,
+      36621.4280128479
+    ]
+  },
+  "rows": [
+    {
+      "id": "vllm-01",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "PagedAttention 커널에서 qk_max 는 어떤 목적으로 수집되나요?",
+      "gold": [
+        "docs/design/paged_attention.md"
+      ],
+      "dense": 1,
+      "dense_ms": 4422,
+      "rerank10": 1,
+      "rerank10_ms": 10526,
+      "rerank20": 1,
+      "rerank20_ms": 19736
+    },
+    {
+      "id": "vllm-02",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "PagedAttention 커널에서 warp 내부의 accs 리덕션은 어떻게 이뤄지나요?",
+      "gold": [
+        "docs/design/paged_attention.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2797,
+      "rerank10": 1,
+      "rerank10_ms": 11902,
+      "rerank20": 1,
+      "rerank20_ms": 18227
+    },
+    {
+      "id": "vllm-03",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "vLLM 의 종단 요청 지연을 나타내는 Prometheus 메트릭 이름은 무엇인가요?",
+      "gold": [
+        "docs/design/metrics.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2439,
+      "rerank10": 1,
+      "rerank10_ms": 9565,
+      "rerank20": 1,
+      "rerank20_ms": 26499
+    },
+    {
+      "id": "vllm-04",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "vLLM 에서 병렬 샘플링(n 파라미터)과 관련된 레거시 메트릭은 어떤 상태인가요?",
+      "gold": [
+        "docs/design/metrics.md"
+      ],
+      "dense": 1,
+      "dense_ms": 3700,
+      "rerank10": 1,
+      "rerank10_ms": 25199,
+      "rerank20": 1,
+      "rerank20_ms": 56061
+    },
+    {
+      "id": "vllm-05",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "tool_choice 가 auto 일 때 스키마 수준 제약을 적용하려면 어떤 환경변수가 필요한가요?",
+      "gold": [
+        "docs/features/tool_calling.md"
+      ],
+      "dense": 1,
+      "dense_ms": 8417,
+      "rerank10": 1,
+      "rerank10_ms": 29086,
+      "rerank20": 1,
+      "rerank20_ms": 55241
+    },
+    {
+      "id": "vllm-06",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "GLM-4.5 모델을 쓸 때 지정해야 하는 tool call 파서 플래그는 무엇인가요?",
+      "gold": [
+        "docs/features/tool_calling.md"
+      ],
+      "dense": 1,
+      "dense_ms": 5940,
+      "rerank10": 1,
+      "rerank10_ms": 23542,
+      "rerank20": 1,
+      "rerank20_ms": 40965
+    },
+    {
+      "id": "vllm-07",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "vLLM CPU 백엔드가 지원하는 파이썬 버전 범위는 어떻게 되나요?",
+      "gold": [
+        "docs/getting_started/installation/cpu.md"
+      ],
+      "dense": 2,
+      "dense_ms": 6304,
+      "rerank10": 1,
+      "rerank10_ms": 21506,
+      "rerank20": 1,
+      "rerank20_ms": 43067
+    },
+    {
+      "id": "vllm-08",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "CPU 백엔드 관련 GitHub 이슈를 올릴 때 제목에 무엇을 넣어야 하나요?",
+      "gold": [
+        "docs/getting_started/installation/cpu.md"
+      ],
+      "dense": 1,
+      "dense_ms": 4477,
+      "rerank10": 1,
+      "rerank10_ms": 17737,
+      "rerank20": 1,
+      "rerank20_ms": 33207
+    },
+    {
+      "id": "vllm-09",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "인증을 우회해 추론을 실행할 수 있는 비-/v1 엔드포인트에는 어떤 것들이 있나요?",
+      "gold": [
+        "docs/usage/security.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2867,
+      "rerank10": 1,
+      "rerank10_ms": 21564,
+      "rerank20": 1,
+      "rerank20_ms": 47929
+    },
+    {
+      "id": "vllm-10",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "요청 파라미터 중 서버 자원을 고갈시킬 수 있는 것은 무엇이고 어느 엔드포인트에 있나요?",
+      "gold": [
+        "docs/usage/security.md"
+      ],
+      "dense": 1,
+      "dense_ms": 6304,
+      "rerank10": 1,
+      "rerank10_ms": 23351,
+      "rerank20": 1,
+      "rerank20_ms": 46785
+    },
+    {
+      "id": "vllm-11",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "모델이 단일 GPU 에 들어가지 않아 OOM 이 발생할 때 무엇을 참고해야 하나요?",
+      "gold": [
+        "docs/usage/troubleshooting.md"
+      ],
+      "dense": 1,
+      "dense_ms": 6605,
+      "rerank10": 1,
+      "rerank10_ms": 20508,
+      "rerank20": 1,
+      "rerank20_ms": 32907
+    },
+    {
+      "id": "vllm-12",
+      "source": "vllm",
+      "lang": "ko",
+      "query": "vLLM 에서 pdb 브레이크포인트를 쓰려면 어떤 환경변수를 어떻게 설정해야 하나요?",
+      "gold": [
+        "docs/usage/troubleshooting.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2547,
+      "rerank10": 1,
+      "rerank10_ms": 16954,
+      "rerank20": 1,
+      "rerank20_ms": 40009
+    },
+    {
+      "id": "prefect-01",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "prefect.yaml 의 push 섹션은 어떤 상황에서 가장 중요한가요?",
+      "gold": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 4475,
+      "rerank10": 1,
+      "rerank10_ms": 19356,
+      "rerank20": 1,
+      "rerank20_ms": 35451
+    },
+    {
+      "id": "prefect-02",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "배포의 concurrency_limit 필드는 어떤 형태를 받을 수 있나요?",
+      "gold": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2943,
+      "rerank10": 1,
+      "rerank10_ms": 18864,
+      "rerank20": 1,
+      "rerank20_ms": 37676
+    },
+    {
+      "id": "prefect-03",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "Prefect 태스크 실행에서 자동으로 추적되는 메타데이터는 무엇인가요?",
+      "gold": [
+        "docs/v3/concepts/tasks.mdx"
+      ],
+      "dense": null,
+      "dense_ms": 2925,
+      "rerank10": null,
+      "rerank10_ms": 17838,
+      "rerank20": null,
+      "rerank20_ms": 36063
+    },
+    {
+      "id": "prefect-04",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "Prefect 에서 태스크를 정의하는 데코레이터와 기본 사용법은 무엇인가요?",
+      "gold": [
+        "docs/v3/concepts/tasks.mdx"
+      ],
+      "dense": null,
+      "dense_ms": 2872,
+      "rerank10": null,
+      "rerank10_ms": 17794,
+      "rerank20": null,
+      "rerank20_ms": 35108
+    },
+    {
+      "id": "prefect-05",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "동시성 제한 태그를 사용하면 API 요청 수에 어떤 영향이 있나요?",
+      "gold": [
+        "docs/v3/concepts/rate-limits.mdx"
+      ],
+      "dense": 2,
+      "dense_ms": 2769,
+      "rerank10": 1,
+      "rerank10_ms": 18785,
+      "rerank20": 1,
+      "rerank20_ms": 35433
+    },
+    {
+      "id": "prefect-06",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "rate limit 에 걸리지 않으려면 flow run 수를 어떻게 줄일 수 있나요?",
+      "gold": [
+        "docs/v3/concepts/rate-limits.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2710,
+      "rerank10": 1,
+      "rerank10_ms": 17828,
+      "rerank20": 1,
+      "rerank20_ms": 38226
+    },
+    {
+      "id": "prefect-07",
+      "source": "prefect",
+      "lang": "ko",
+      "query": "Airflow 개념과 Prefect 개념의 대응 관계는 어디에 정리되어 있나요?",
+      "gold": [
+        "docs/v3/how-to-guides/migrate/airflow.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2291,
+      "rerank10": 1,
+      "rerank10_ms": 20385,
+      "rerank20": 1,
+      "rerank20_ms": 41623
+    },
+    {
+      "id": "langfuse-01",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "OpenAI Fast mode 요금 티어는 어떤 파라미터로 판별되나요?",
+      "gold": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 4492,
+      "rerank10": 1,
+      "rerank10_ms": 21085,
+      "rerank20": 1,
+      "rerank20_ms": 39926
+    },
+    {
+      "id": "langfuse-02",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "Langfuse 의 모델 가격 감사는 어떤 절차를 따르나요?",
+      "gold": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 3876,
+      "rerank10": 1,
+      "rerank10_ms": 18560,
+      "rerank20": 1,
+      "rerank20_ms": 38186
+    },
+    {
+      "id": "langfuse-03",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "Langfuse 에서 Scores 는 무엇이며 어떤 평가 결과를 담나요?",
+      "gold": [
+        "content/docs/evaluation/core-concepts.mdx"
+      ],
+      "dense": 3,
+      "dense_ms": 2469,
+      "rerank10": 1,
+      "rerank10_ms": 27538,
+      "rerank20": 1,
+      "rerank20_ms": 45999
+    },
+    {
+      "id": "langfuse-04",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "애플리케이션 성능을 일관되게 측정하려면 Langfuse 에서 무엇부터 만들어야 하나요?",
+      "gold": [
+        "content/docs/evaluation/core-concepts.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 4437,
+      "rerank10": null,
+      "rerank10_ms": 17787,
+      "rerank20": null,
+      "rerank20_ms": 33324
+    },
+    {
+      "id": "langfuse-05",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "민감 데이터가 애플리케이션 밖으로 나가면 안 될 때 어느 지점에서 마스킹해야 하나요?",
+      "gold": [
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2622,
+      "rerank10": 1,
+      "rerank10_ms": 18781,
+      "rerank20": 1,
+      "rerank20_ms": 33578
+    },
+    {
+      "id": "langfuse-06",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "새 Python SDK 에서 마스킹을 설정할 때 권장되는 방식은 무엇인가요?",
+      "gold": [
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2518,
+      "rerank10": 1,
+      "rerank10_ms": 18162,
+      "rerank20": 1,
+      "rerank20_ms": 36321
+    },
+    {
+      "id": "langfuse-07",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "대시보드 위젯의 조회 결과를 CSV 로 내보내려면 어떻게 하나요?",
+      "gold": [
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 3019,
+      "rerank10": 1,
+      "rerank10_ms": 17062,
+      "rerank20": 1,
+      "rerank20_ms": 34148
+    },
+    {
+      "id": "langfuse-08",
+      "source": "langfuse",
+      "lang": "ko",
+      "query": "Langfuse 대시보드를 다른 프로젝트로 옮기려면 어떤 기능을 사용하나요?",
+      "gold": [
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "dense": 5,
+      "dense_ms": 2253,
+      "rerank10": 1,
+      "rerank10_ms": 17529,
+      "rerank20": 1,
+      "rerank20_ms": 35760
+    },
+    {
+      "id": "vllm-01",
+      "source": "vllm",
+      "lang": "en",
+      "query": "What is qk_max collected for in the PagedAttention kernel?",
+      "gold": [
+        "docs/design/paged_attention.md"
+      ],
+      "dense": 2,
+      "dense_ms": 2495,
+      "rerank10": 1,
+      "rerank10_ms": 17725,
+      "rerank20": 1,
+      "rerank20_ms": 35053
+    },
+    {
+      "id": "vllm-02",
+      "source": "vllm",
+      "lang": "en",
+      "query": "How is the reduction of accs performed within a warp in the PagedAttention kernel?",
+      "gold": [
+        "docs/design/paged_attention.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2566,
+      "rerank10": 1,
+      "rerank10_ms": 18335,
+      "rerank20": 1,
+      "rerank20_ms": 36365
+    },
+    {
+      "id": "vllm-03",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which Prometheus metric reports end-to-end request latency in vLLM?",
+      "gold": [
+        "docs/design/metrics.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2407,
+      "rerank10": 2,
+      "rerank10_ms": 17499,
+      "rerank20": 2,
+      "rerank20_ms": 36787
+    },
+    {
+      "id": "vllm-04",
+      "source": "vllm",
+      "lang": "en",
+      "query": "What is the status of legacy metrics related to parallel sampling in vLLM?",
+      "gold": [
+        "docs/design/metrics.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2727,
+      "rerank10": 1,
+      "rerank10_ms": 17930,
+      "rerank20": 1,
+      "rerank20_ms": 37194
+    },
+    {
+      "id": "vllm-05",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which environment variable is required for schema-level constraints when tool_choice is auto?",
+      "gold": [
+        "docs/features/tool_calling.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2375,
+      "rerank10": 1,
+      "rerank10_ms": 22613,
+      "rerank20": 1,
+      "rerank20_ms": 45993
+    },
+    {
+      "id": "vllm-06",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which tool-call parser flag should be used for GLM-4.5 models?",
+      "gold": [
+        "docs/features/tool_calling.md"
+      ],
+      "dense": 1,
+      "dense_ms": 4141,
+      "rerank10": 1,
+      "rerank10_ms": 19398,
+      "rerank20": 1,
+      "rerank20_ms": 38849
+    },
+    {
+      "id": "vllm-07",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which Python versions does the vLLM CPU backend support?",
+      "gold": [
+        "docs/getting_started/installation/cpu.md"
+      ],
+      "dense": 1,
+      "dense_ms": 5150,
+      "rerank10": 1,
+      "rerank10_ms": 18605,
+      "rerank20": 1,
+      "rerank20_ms": 36494
+    },
+    {
+      "id": "vllm-08",
+      "source": "vllm",
+      "lang": "en",
+      "query": "What should be added to the issue title when reporting a CPU backend problem on GitHub?",
+      "gold": [
+        "docs/getting_started/installation/cpu.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2225,
+      "rerank10": 1,
+      "rerank10_ms": 17341,
+      "rerank20": 1,
+      "rerank20_ms": 35269
+    },
+    {
+      "id": "vllm-09",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which non-/v1 endpoints can be used to bypass authentication and run inference?",
+      "gold": [
+        "docs/usage/security.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2520,
+      "rerank10": 1,
+      "rerank10_ms": 17460,
+      "rerank20": 1,
+      "rerank20_ms": 34547
+    },
+    {
+      "id": "vllm-10",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which request parameter can exhaust server resources, and in which endpoints does it appear?",
+      "gold": [
+        "docs/usage/security.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2218,
+      "rerank10": 1,
+      "rerank10_ms": 17343,
+      "rerank20": 1,
+      "rerank20_ms": 36324
+    },
+    {
+      "id": "vllm-11",
+      "source": "vllm",
+      "lang": "en",
+      "query": "What should I consult when a model is too large for a single GPU and causes OOM?",
+      "gold": [
+        "docs/usage/troubleshooting.md"
+      ],
+      "dense": 2,
+      "dense_ms": 2414,
+      "rerank10": 1,
+      "rerank10_ms": 17041,
+      "rerank20": 1,
+      "rerank20_ms": 36700
+    },
+    {
+      "id": "vllm-12",
+      "source": "vllm",
+      "lang": "en",
+      "query": "Which environment variable must be set to use stock pdb breakpoints in vLLM?",
+      "gold": [
+        "docs/usage/troubleshooting.md"
+      ],
+      "dense": 1,
+      "dense_ms": 2714,
+      "rerank10": 1,
+      "rerank10_ms": 17880,
+      "rerank20": 1,
+      "rerank20_ms": 35805
+    },
+    {
+      "id": "prefect-01",
+      "source": "prefect",
+      "lang": "en",
+      "query": "In what situation is the push section of prefect.yaml most critical?",
+      "gold": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2427,
+      "rerank10": 1,
+      "rerank10_ms": 17417,
+      "rerank20": 1,
+      "rerank20_ms": 33868
+    },
+    {
+      "id": "prefect-02",
+      "source": "prefect",
+      "lang": "en",
+      "query": "What forms can a deployment's concurrency_limit field accept?",
+      "gold": [
+        "docs/v3/how-to-guides/deployments/prefect-yaml.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2041,
+      "rerank10": 1,
+      "rerank10_ms": 18188,
+      "rerank20": 1,
+      "rerank20_ms": 37750
+    },
+    {
+      "id": "prefect-03",
+      "source": "prefect",
+      "lang": "en",
+      "query": "What metadata is tracked automatically for Prefect task runs?",
+      "gold": [
+        "docs/v3/concepts/tasks.mdx"
+      ],
+      "dense": null,
+      "dense_ms": 2178,
+      "rerank10": 2,
+      "rerank10_ms": 21367,
+      "rerank20": 2,
+      "rerank20_ms": 47366
+    },
+    {
+      "id": "prefect-04",
+      "source": "prefect",
+      "lang": "en",
+      "query": "Which decorator defines a Prefect task and how is it used?",
+      "gold": [
+        "docs/v3/concepts/tasks.mdx"
+      ],
+      "dense": null,
+      "dense_ms": 6074,
+      "rerank10": null,
+      "rerank10_ms": 18315,
+      "rerank20": null,
+      "rerank20_ms": 34755
+    },
+    {
+      "id": "prefect-05",
+      "source": "prefect",
+      "lang": "en",
+      "query": "How does using a concurrency limit tag affect the number of API requests?",
+      "gold": [
+        "docs/v3/concepts/rate-limits.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2400,
+      "rerank10": 1,
+      "rerank10_ms": 16610,
+      "rerank20": 1,
+      "rerank20_ms": 36161
+    },
+    {
+      "id": "prefect-06",
+      "source": "prefect",
+      "lang": "en",
+      "query": "How can I reduce flow run volume to avoid hitting rate limits?",
+      "gold": [
+        "docs/v3/concepts/rate-limits.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2216,
+      "rerank10": 1,
+      "rerank10_ms": 18218,
+      "rerank20": 1,
+      "rerank20_ms": 35378
+    },
+    {
+      "id": "prefect-07",
+      "source": "prefect",
+      "lang": "en",
+      "query": "Where is the mapping between Airflow concepts and Prefect concepts documented?",
+      "gold": [
+        "docs/v3/how-to-guides/migrate/airflow.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2304,
+      "rerank10": 1,
+      "rerank10_ms": 20569,
+      "rerank20": 1,
+      "rerank20_ms": 34686
+    },
+    {
+      "id": "langfuse-01",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "Which parameter determines OpenAI Fast mode pricing tiers?",
+      "gold": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 4115,
+      "rerank10": 1,
+      "rerank10_ms": 19232,
+      "rerank20": 1,
+      "rerank20_ms": 35475
+    },
+    {
+      "id": "langfuse-02",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "What workflow does the Langfuse model price audit follow?",
+      "gold": [
+        "content/docs/observability/features/token-and-cost-tracking.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2242,
+      "rerank10": 1,
+      "rerank10_ms": 19546,
+      "rerank20": 1,
+      "rerank20_ms": 36181
+    },
+    {
+      "id": "langfuse-03",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "What are Scores in Langfuse and what evaluation results do they store?",
+      "gold": [
+        "content/docs/evaluation/core-concepts.mdx"
+      ],
+      "dense": 2,
+      "dense_ms": 2551,
+      "rerank10": 1,
+      "rerank10_ms": 18745,
+      "rerank20": 1,
+      "rerank20_ms": 37226
+    },
+    {
+      "id": "langfuse-04",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "What should I create first to measure application performance consistently in Langfuse?",
+      "gold": [
+        "content/docs/evaluation/core-concepts.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2774,
+      "rerank10": 5,
+      "rerank10_ms": 16982,
+      "rerank20": null,
+      "rerank20_ms": 35288
+    },
+    {
+      "id": "langfuse-05",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "Where should masking be applied when sensitive data must not leave the application?",
+      "gold": [
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2267,
+      "rerank10": 1,
+      "rerank10_ms": 18393,
+      "rerank20": 1,
+      "rerank20_ms": 37502
+    },
+    {
+      "id": "langfuse-06",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "What is the recommended masking setup for the new Python SDK?",
+      "gold": [
+        "content/docs/observability/features/masking.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 2872,
+      "rerank10": 1,
+      "rerank10_ms": 23900,
+      "rerank20": 1,
+      "rerank20_ms": 60309
+    },
+    {
+      "id": "langfuse-07",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "How do I export a dashboard widget's query result as CSV?",
+      "gold": [
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 5622,
+      "rerank10": 1,
+      "rerank10_ms": 13749,
+      "rerank20": 1,
+      "rerank20_ms": 38333
+    },
+    {
+      "id": "langfuse-08",
+      "source": "langfuse",
+      "lang": "en",
+      "query": "Which feature lets me move a Langfuse dashboard to another project?",
+      "gold": [
+        "content/docs/metrics/features/custom-dashboards.mdx"
+      ],
+      "dense": 1,
+      "dense_ms": 3024,
+      "rerank10": 1,
+      "rerank10_ms": 12982,
+      "rerank20": 1,
+      "rerank20_ms": 36621
+    }
+  ]
+}

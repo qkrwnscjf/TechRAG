@@ -16,12 +16,15 @@ Question: {question}
 )
 
 # Generator prompt
+# "출처를 답변 끝에 포함하라" 는 지시가 있었다. 그 결과 LLM 이 "Sources: * Paged Attention"
+# 처럼 파일명도 URL 도 아닌 목록을 매 답변에 덧붙였다. 프론트엔드가 이미 검색된 문서로
+# 출처 칩을 그리므로 중복이기도 하다. 청크를 고정한 5문항 측정에서 5/5 발생했고,
+# 지시를 지운 뒤 0/5 로 사라졌다. (BENCHMARK Phase 30)
 generator_prompt = PromptTemplate.from_template(
     """You are an expert technical assistant for question-answering tasks.
 Use the following pieces of retrieved context to answer the question.
 If you don't know the answer, just say that you don't know.
 Keep the answer concise and clear.
-Include the sources you used at the end of your answer in a clear format.
 
 Context:
 {context}

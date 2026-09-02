@@ -241,6 +241,22 @@ function Home() {
 
         <div className={started ? 'composer' : 'composer is-static'}>
           <div className="composer-row">
+            {/* 대화 중에만 나타난다. 입력줄은 하단 고정이라 항상 보인다. */}
+            {started && (
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm btn-new-chat"
+                onClick={() => { resetConversation(); setQuery(''); inputRef.current?.focus(); }}
+                disabled={isStreaming}
+                title="Clear this conversation and start over"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"
+                     strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                <span className="btn-new-chat-label">New chat</span>
+              </button>
+            )}
             <input
               ref={inputRef}
               type="text"
@@ -268,16 +284,6 @@ function Home() {
             <span><kbd>Enter</kbd> to send</span>
             <span><kbd>⌘</kbd><kbd>K</kbd> to focus</span>
             {started && <span>Follow-ups keep the conversation context.</span>}
-            {started && (
-              <button
-                type="button"
-                className="link-button composer-reset"
-                onClick={() => { resetConversation(); setQuery(''); inputRef.current?.focus(); }}
-                disabled={isStreaming}
-              >
-                New chat
-              </button>
-            )}
           </div>
         </div>
       </div>

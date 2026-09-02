@@ -1498,3 +1498,16 @@ code, pre, kbd, .font-mono, .trace-chip, .q-badge, .doc-meta, .count-pill {
 
 /* 새 대화 버튼은 안내 문구들과 떨어뜨려 오른쪽 끝에 둔다 */
 .composer-reset { margin-left: auto; }
+
+/* --- 새 대화 버튼 --- */
+/* 텍스트 링크로 두었더니 눈에 띄지 않았다. 아이콘과 테두리를 준 버튼으로 바꾸고
+   항상 보이는 입력줄에 둔다(입력줄은 하단 고정이라 스크롤과 무관하게 보인다). */
+.btn svg { width: 16px; height: 16px; display: block; flex: none; }
+
+.btn-new-chat { flex: none; }
+
+/* 좁은 화면에서는 아이콘만 남긴다. 입력창 폭을 뺏지 않기 위해서다. */
+@media (max-width: 640px) {
+  .btn-new-chat { padding: 0; width: 36px; }
+  .btn-new-chat-label { display: none; }
+}

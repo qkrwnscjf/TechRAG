@@ -174,7 +174,7 @@ const EXAMPLES = [
 
 function Home() {
   const [query, setQuery] = useState('');
-  const { turns, isStreaming, askQuestion, stopStream } = useAgentStream();
+  const { turns, isStreaming, askQuestion, stopStream, resetConversation } = useAgentStream();
   const inputRef = useRef(null);
   const endRef = useRef(null);
   const started = turns.length > 0;
@@ -268,6 +268,16 @@ function Home() {
             <span><kbd>Enter</kbd> to send</span>
             <span><kbd>⌘</kbd><kbd>K</kbd> to focus</span>
             {started && <span>Follow-ups keep the conversation context.</span>}
+            {started && (
+              <button
+                type="button"
+                className="link-button composer-reset"
+                onClick={() => { resetConversation(); setQuery(''); inputRef.current?.focus(); }}
+                disabled={isStreaming}
+              >
+                New chat
+              </button>
+            )}
           </div>
         </div>
       </div>

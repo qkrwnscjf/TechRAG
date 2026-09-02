@@ -1473,3 +1473,28 @@ code, pre, kbd, .font-mono, .trace-chip, .q-badge, .doc-meta, .count-pill {
                 color var(--dur-medium) var(--ease-emphasized);
   }
 }
+
+/* --- 텍스트형 버튼 --- */
+/* 링크처럼 보이되 실제로는 버튼이다. 화면 전환이 아니라 상태를 바꾸는 동작이므로
+   <a> 가 아니라 <button> 이어야 한다(키보드·스크린리더 동작이 다르다). */
+.link-button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color var(--dur-short) var(--ease-emphasized);
+}
+.link-button:hover { color: var(--accent-text); text-decoration: underline; }
+.link-button:focus-visible {
+  outline: none;
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--accent);
+}
+.link-button:disabled { opacity: 0.45; cursor: not-allowed; text-decoration: none; }
+.link-button:disabled:hover { color: var(--muted-foreground); }
+
+/* 새 대화 버튼은 안내 문구들과 떨어뜨려 오른쪽 끝에 둔다 */
+.composer-reset { margin-left: auto; }

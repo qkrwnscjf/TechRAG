@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { agentClient } from '../api/agentClient';
+import { agentClient, resetSession } from '../api/agentClient';
 
 /**
  * 대화 전체를 턴 배열로 들고 있는다.
@@ -79,5 +79,22 @@ export function useAgentStream() {
     setIsStreaming(false);
   }, [patchLast]);
 
-  return { turns, isStreaming, askQuestion, stopStream };
+  /**
+   * 대화를 처음 상태로 되돌린다.
+   *
+   * 화면만 비우면 안 된다. 백엔드는 thread_id 로 대화를 기억하므로, 같은 스레드에
+   * 새 질문을 던지면 지워진 것처럼 보이는 앞 대화를 contextualize 가 계속 참조한다.
+   * 사용자가 보는 것과 에이전트가 아는 것이 어긋나므로 스레드도 함께 새로 판다.
+   */
+  const resetConversation = useCallback(() => {
+    if (esRef.current) {
+      esRef.current.close();
+      esRef.current = null;
+    }
+    setTurns([]);
+    setIsStreaming(false);
+    resetSession();
+  }, []);
+
+  return { turns, isStreaming, askQuestion, stopStream, resetConversation };
 }

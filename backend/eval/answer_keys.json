@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "created": "2026-09-01",
+  "document": "docs/design/paged_attention.md",
+  "why": [
+    "Phase 28 의 실패는 '정답 문서를 맞히고 답이 없는 조각을 가져온 것' 이었다.",
+    "골든셋의 정답 정의(file_path)로는 이 실패가 성공으로 집계된다.",
+    "그래서 '이 조각이 이 질문에 답이 되는가' 를 조각 단위로 판정할 근거가 필요하다."
+  ],
+  "method": [
+    "문서 35조각을 모두 읽고 답이 되는 조각과 아닌 조각을 사람이 구분했다.",
+    "재수집하면 chunk_index 가 바뀌므로 번호가 아니라 **내용 표식**으로 기록한다.",
+    "표식은 답 조각에만 나타나야 한다. 비정답 조각에 하나라도 나타나면 측정이 무너진다.",
+    "그래서 not_answer_markers 로 비정답 조각을 특정해 두고, 실행 시마다 검증한다.",
+    "이전 시도가 실패한 원인: 'thread block' 을 표식에 넣었는데, 경고문 조각이 용어를",
+    "정의하며 그 표현을 쓰고 있었다. 검증을 하지 않아 실패 사례를 성공으로 셌다."
+  ],
+
+  "non_answer_chunks": {
+    "warning": "This is a historical document based on",
+    "meta": "this document may not cover all details",
+    "citation": "@inproceedings{kwon2023efficient"
+  },
+
+  "questions": {
+    "gen-01": {
+      "intent": "PagedAttention 이 전체적으로 어떻게 동작하는가",
+      "answer_markers": [
+        "thread group", "q_vecs", "k_vecs", "qk_max", "exp_sum",
+        "accs", "Qk_dot", "red_smem", "V_VEC_SIZE", "logits_vec",
+        "NUM_VECS_PER_THREAD", "shared memory"
+      ]
+    },
+    "gen-02": {
+      "intent": "key 와 value 데이터를 메모리에 어떻게 저장·적재하는가",
+      "answer_markers": [
+        "k_vecs", "q_vecs", "V_VEC_SIZE", "k_ptr", "v_ptr",
+        "logits_vec", "register memory", "memory layout for key",
+        "THREAD_GROUP_SIZE", "NUM_VECS_PER_THREAD"
+      ]
+    },
+    "gen-03": {
+      "intent": "어텐션 커널에서 softmax 를 어떻게 계산하는가",
+      "answer_markers": [
+        "qk_max", "exp_sum", "red_smem", "inv_sum",
+        "normalized softmax", "VLLM_SHFL_XOR_SYNC"
+      ]
+    }
+  }
+}

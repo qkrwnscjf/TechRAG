@@ -40,6 +40,14 @@ REPOS = {
 # 베이스라인(eval_baseline.json)에서 정답을 밀어낸 문서들.
 # 스윕에서 이들이 빠지면 "개념 문서가 예제에 밀린다"는 현상 자체가 재현되지 않는다.
 DISTRACTORS = {
+    # Phase 28 에서 "How does PagedAttention work?" 의 상위 5칸을 차지한 문서들.
+    # 이들이 빠지면 개요 청크가 본문 청크를 이기는 현상이 재현되지 않는다.
+    "vllm": [
+        "README.md",
+        "docs/README.md",
+        "docs/usage/troubleshooting.md",
+        "docs/getting_started/installation/cpu.md",
+    ],
     "prefect": [
         "docs/v3/how-to-guides/migrate/upgrade-to-prefect-3.mdx",
         "docs/v3/examples/run-api-sourced-etl.mdx",

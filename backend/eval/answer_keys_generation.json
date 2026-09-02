@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "created": "2026-09-03",
+  "purpose": "생성 단계(프롬프트·컨텍스트 조립) 개선 효과 측정용 정답 키",
+  "method": [
+    "검색은 결정적이므로 두 설정에 **동일한 청크**를 고정 입력한다. 생성 변화만 분리된다.",
+    "채점기(grader)는 우회한다. 변수를 줄이고 LLM 호출도 절약하기 위함이다.",
+    "표식은 '검색된 청크에 실제로 존재하는 사실' 만 쓴다. 청크에 없는 것을 요구하면",
+    "생성기가 아니라 검색기를 재는 것이 된다. 스크립트가 실행 시마다 존재를 검증한다."
+  ],
+  "questions": {
+    "q1": {
+      "source": "vllm",
+      "question": "How does PagedAttention work in vLLM?",
+      "note": "검색 실패 사례. 어느 청크에도 동작 원리 설명이 없다. 있는 것만이라도 답하고 부족한 부분을 밝히는지 보는 케이스",
+      "markers": ["separate block", "key and value", "attention_kernels.cu", "multi-head query"]
+    },
+    "q2": {
+      "source": "vllm",
+      "question": "How do I serve a model with tensor parallelism in vLLM?",
+      "note": "부분 정보만 존재. 구체적 CLI 플래그는 청크에 없다",
+      "markers": ["Megatron", "tensor-parallel", "pipeline", "Single-node"]
+    },
+    "q3": {
+      "source": "prefect",
+      "question": "How do I configure caching for a Prefect task?",
+      "note": "정보 충분",
+      "markers": ["cache_policy", "INPUTS", "TASK_SOURCE", "cache key", "RedisLockManager"]
+    },
+    "q4": {
+      "source": "prefect",
+      "question": "How do I retry a failed task in Prefect?",
+      "note": "청크 4개 중 1개에만 답이 있다. 노이즈 속 정답 추출 케이스",
+      "markers": ["retries", "retry_delay_seconds", "@task", "@flow"]
+    },
+    "q5": {
+      "source": "langfuse",
+      "question": "How do I trace an LLM call with Langfuse?",
+      "note": "인접 청크 중복(config.mdx 4·5번) 존재",
+      "markers": ["get_client", "langfuse.openai", "observeOpenAI", "LangfuseClient"]
+    },
+    "q6": {
+      "source": "langfuse",
+      "question": "What is a session in Langfuse?",
+      "note": "인접 청크 중복(sessions.mdx 0·1번). 'In the session view you can:' 가 두 번 나온다",
+      "markers": ["group traces", "session replay", "thread", "bookmark", "public link"]
+    }
+  }
+}

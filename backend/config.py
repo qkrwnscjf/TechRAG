@@ -13,7 +13,10 @@ class Settings(BaseSettings):
 
     # --- Retrieval / Reranker ---
     # 최종적으로 생성 노드에 넘길 문서 수
-    retriever_top_k: int = 4
+    # 4 -> 5. 실측: 정답 포함률 90.7% -> 92.6% (54질의 중 1건). k=8 까지 넓혀도
+    # 더 들어오는 질의가 없어(5 와 8 이 동일) 5 에서 멈춘다. 남은 미포함 4건은
+    # 정답이 9~28위에 있어 k 로는 닿지 않는다. (BENCHMARK Phase 33)
+    retriever_top_k: int = 5
     # 리랭커를 켰을 때 검색 단계에서 뽑을 후보 수 (넓게 뽑아 리랭커로 좁힌다)
     reranker_candidates: int = 10
     # 리랭커 활성화 여부. CPU 환경에서는 질문당 3~7초가 추가되므로 기본은 비활성.

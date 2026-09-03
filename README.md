@@ -4,11 +4,15 @@
 
 **기술 문서를 검색해 답하고, 자신의 검색 결과를 스스로 검증하는 RAG 챗봇**
 
+![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C?logo=langchain&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?logo=langchain&logoColor=white)
+![LangSmith](https://img.shields.io/badge/LangSmith-1C3C3C?logo=langchain&logoColor=white)
+![Pinecone](https://img.shields.io/badge/Pinecone-000000?logo=pinecone&logoColor=white)
+
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
-![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C?logo=langchain&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
 ![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)
-![Pinecone](https://img.shields.io/badge/Pinecone-000000?logo=pinecone&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)
 
 </div>
@@ -98,7 +102,7 @@ GitHub 레포·PDF·웹페이지의 기술 문서를 수집해 색인하고, 자
 | **Backend** | FastAPI, SQLite | 비동기 SSE + 의존성 없는 영속화 |
 | **Frontend** | React + Vite, EventSource | 토큰 단위 스트리밍 수신 |
 | **Deployment** | Docker Compose, Nginx | 단일 명령 재현 |
-| **Observability** | LangSmith (선택) | 노드별 추적 |
+| **Observability** | LangSmith (선택) | 노드별 입출력·토큰·지연 추적 — **채점기가 어느 문서를 버렸는지** 확인 |
 
 > LangGraph 를 고른 이유는 **순환 구조** 때문입니다.
 > 일반적인 체인(DAG)으로는 "채점 실패 → 이전 단계로 되돌아가기"를 표현할 수 없습니다.

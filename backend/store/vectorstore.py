@@ -12,6 +12,11 @@ from config import settings, resolve_device
 logger = logging.getLogger(__name__)
 
 EMBEDDING_DIM = 1024        # BAAI/bge-m3
+# 모델 버전을 고정한다. 핀이 없으면 캐시가 무효화될 때 HF Hub 에서 새 가중치를 받아오고,
+# 그러면 이미 색인된 벡터와 앞으로 만들 질의 벡터가 서로 다른 공간에 놓인다.
+# 예외가 나지 않고 검색 정확도만 조용히 떨어지므로 발견하기 어렵다.
+# 이 해시는 현재 Pinecone 색인을 만든 바로 그 버전이다(hf-cache 의 refs/main).
+EMBEDDING_REVISION = "5617a9f61b028005a4858fdac845db406aefb181"
 UPSERT_BATCH = 64           # 한 번에 임베딩·적재할 청크 수
 DELETE_BATCH = 1000         # Pinecone 요청당 삭제 ID 상한
 
@@ -27,7 +32,7 @@ class VectorStoreManager:
         # (bge-m3 는 원래 정규화해서 쓰는 것이 표준이다.)
         self.embeddings = HuggingFaceEmbeddings(
             model_name="BAAI/bge-m3",
-            model_kwargs={"device": device},
+            model_kwargs={"device": device, "revision": EMBEDDING_REVISION},
             encode_kwargs={"normalize_embeddings": True},
         )
 
